@@ -29,7 +29,7 @@ public class Day01Test {
 
     @Test
     @Disabled
-    void solveExample() {
+    void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
                 42
@@ -50,6 +50,21 @@ public class Day01Test {
 
         // when
         var result = Day01.solvePart1(input);
+
+        // then
+        assertThat(result).isEqualTo(42);
+    }
+
+    @Test
+    @Disabled
+    void solvePart2UsingExample() {
+        // given
+        RawProblemInput input = new RawProblemInput("""
+                42
+                """);
+
+        // when
+        var result = Day01.solvePart2(input);
 
         // then
         assertThat(result).isEqualTo(42);
