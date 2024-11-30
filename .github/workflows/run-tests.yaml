@@ -1,0 +1,22 @@
+name: Run Tests with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.11.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 23
+          java-distribution: temurin
+          maven-version: 3.9.9
+      - name: Test with Maven
+        run: mvn -B clean verify
