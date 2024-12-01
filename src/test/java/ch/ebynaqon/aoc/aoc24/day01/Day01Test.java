@@ -15,7 +15,12 @@ public class Day01Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                3   4
+                4   3
+                2   5
+                1   3
+                3   9
+                3   3
                 """);
 
         // when
@@ -23,27 +28,35 @@ public class Day01Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
+                new Pair(3L, 4L),
+                new Pair(4L, 3L),
+                new Pair(2L, 5L),
+                new Pair(1L, 3L),
+                new Pair(3L, 9L),
+                new Pair(3L, 3L)
         )));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                3   4
+                4   3
+                2   5
+                1   3
+                3   9
+                3   3
                 """);
 
         // when
         var result = Day01.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(11);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/1/input
         RawProblemInput input = RawProblemInput.fromResource("/day01.txt");
@@ -52,7 +65,7 @@ public class Day01Test {
         var result = Day01.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(1873376);
     }
 
     @Test
@@ -60,7 +73,12 @@ public class Day01Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                3   4
+                4   3
+                2   5
+                1   3
+                3   9
+                3   3
                 """);
 
         // when
