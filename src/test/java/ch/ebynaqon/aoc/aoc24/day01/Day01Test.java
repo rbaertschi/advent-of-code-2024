@@ -8,7 +8,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Solving puzzle https://adventofcode.com/2024/day/1
-public class Day01Test {
+class Day01Test {
 
     @Test
     void parseProblemInput() {
