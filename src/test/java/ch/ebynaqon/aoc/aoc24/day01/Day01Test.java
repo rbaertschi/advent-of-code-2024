@@ -27,14 +27,10 @@ public class Day01Test {
         var actual = Day01.parseProblem(input);
 
         // then
-        assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new Pair(3L, 4L),
-                new Pair(4L, 3L),
-                new Pair(2L, 5L),
-                new Pair(1L, 3L),
-                new Pair(3L, 9L),
-                new Pair(3L, 3L)
-        )));
+        assertThat(actual).isEqualTo(new ProblemInput(
+                List.of(3, 4, 2, 1, 3, 3),
+                List.of(4, 3, 5, 3, 9, 3)
+        ));
     }
 
     @Test
@@ -69,7 +65,6 @@ public class Day01Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -85,11 +80,10 @@ public class Day01Test {
         var result = Day01.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(31);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day01.txt");
@@ -98,7 +92,7 @@ public class Day01Test {
         var result = Day01.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(18997088);
     }
 
 }
