@@ -1,6 +1,7 @@
 package ch.ebynaqon.aoc.aoc24.day02;
 
-import java.util.ArrayList;
+import ch.ebynaqon.aoc.helper.CollectionHelper;
+
 import java.util.List;
 
 record Report(List<Integer> levels) {
@@ -35,13 +36,7 @@ record Report(List<Integer> levels) {
             return true;
         }
         for (int i = 0; i < levels.size(); i++) {
-            List<Integer> listWithLevelRemoved = new ArrayList<>(levels.size() - 1);
-            for (int j = 0; j < levels.size(); j++) {
-                if (i != j) {
-                    listWithLevelRemoved.add(levels.get(j));
-                }
-            }
-            if (safetyCheck(listWithLevelRemoved)) {
+            if (safetyCheck(CollectionHelper.dropValueAtIndex(levels, i))) {
                 return true;
             }
         }
