@@ -15,7 +15,12 @@ class Day02Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                7 6 4 2 1
+                1 2 7 8 9
+                9 7 6 2 1
+                1 3 2 4 5
+                8 6 4 4 1
+                1 3 6 7 9
                 """);
 
         // when
@@ -23,27 +28,35 @@ class Day02Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
+                new Report(List.of(7, 6, 4, 2, 1)),
+                new Report(List.of(1, 2, 7, 8, 9)),
+                new Report(List.of(9, 7, 6, 2, 1)),
+                new Report(List.of(1, 3, 2, 4, 5)),
+                new Report(List.of(8, 6, 4, 4, 1)),
+                new Report(List.of(1, 3, 6, 7, 9))
         )));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                7 6 4 2 1
+                1 2 7 8 9
+                9 7 6 2 1
+                1 3 2 4 5
+                8 6 4 4 1
+                1 3 6 7 9
                 """);
 
         // when
         var result = Day02.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(2);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/2/input
         RawProblemInput input = RawProblemInput.fromResource("/day02.txt");
@@ -52,7 +65,7 @@ class Day02Test {
         var result = Day02.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(534);
     }
 
     @Test
@@ -60,7 +73,12 @@ class Day02Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                7 6 4 2 1
+                1 2 7 8 9
+                9 7 6 2 1
+                1 3 2 4 5
+                8 6 4 4 1
+                1 3 6 7 9
                 """);
 
         // when
