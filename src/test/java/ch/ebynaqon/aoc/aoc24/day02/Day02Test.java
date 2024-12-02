@@ -69,7 +69,6 @@ class Day02Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -85,11 +84,10 @@ class Day02Test {
         var result = Day02.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(4);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day02.txt");
@@ -98,7 +96,7 @@ class Day02Test {
         var result = Day02.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(577);
     }
 
 }

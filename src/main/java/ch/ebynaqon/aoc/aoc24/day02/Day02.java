@@ -23,6 +23,6 @@ interface Day02 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.reports().stream().filter(Report::isSafe).count();
+        return problem.reports().stream().filter(Report::isSafeWithDampener).count();
     }
 }
