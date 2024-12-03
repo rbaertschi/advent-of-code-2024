@@ -31,6 +31,27 @@ class Day03Test {
     }
 
     @Test
+    void parseProblemInputPart2() {
+        // given
+        RawProblemInput input = new RawProblemInput("""
+                xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
+                """);
+
+        // when
+        var actual = Day03.parseProblem(input);
+
+        // then
+        assertThat(actual).isEqualTo(new ProblemInput(List.of(
+                new Multiplication(2,4),
+                new DoNot(),
+                new Multiplication(5,5),
+                new Multiplication(11,8),
+                new Do(),
+                new Multiplication(8,5)
+        )));
+    }
+
+    @Test
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -57,22 +78,20 @@ class Day03Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
                 """);
 
         // when
         var result = Day03.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(48);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day03.txt");
@@ -81,7 +100,7 @@ class Day03Test {
         var result = Day03.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(79845780);
     }
 
 }
