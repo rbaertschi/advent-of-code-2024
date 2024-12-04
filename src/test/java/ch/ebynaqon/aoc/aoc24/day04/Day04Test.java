@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day04;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -24,12 +23,7 @@ class Day04Test {
         var actual = Day04.parseProblem(input);
 
         // then
-        assertThat(actual).isEqualTo(new ProblemInput(
-                List.of("123", "456", "789"),
-                List.of("147", "258", "369"),
-                List.of("7", "48", "159","26","3"),
-                List.of("9", "86", "753", "42", "1")
-        ));
+        assertThat(actual).isEqualTo(new ProblemInput(List.of("123", "456", "789"), 3, 3));
     }
 
     @Test
@@ -69,14 +63,15 @@ class Day04Test {
 
     @Test
     void getCross() {
-        List<String> lines = List.of(
+        ProblemInput problem = new ProblemInput(List.of(
                 "123",
                 "456",
                 "789"
-        );
-        Day04.Cross cross = Day04.getCross(1, 1, lines);
+        ), 3, 3);
 
-        assertThat(cross).isEqualTo(new Day04.Cross("753","159"));
+        Day04.Cross cross = Day04.getCross(1, 1, problem);
+
+        assertThat(cross).isEqualTo(new Day04.Cross("753", "159"));
     }
 
     @Test
