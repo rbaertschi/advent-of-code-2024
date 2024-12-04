@@ -68,7 +68,18 @@ class Day04Test {
     }
 
     @Test
-    @Disabled
+    void getCross() {
+        List<String> lines = List.of(
+                "123",
+                "456",
+                "789"
+        );
+        Day04.Cross cross = Day04.getCross(1, 1, lines);
+
+        assertThat(cross).isEqualTo(new Day04.Cross("753","159"));
+    }
+
+    @Test
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -88,11 +99,10 @@ class Day04Test {
         var result = Day04.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(9);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day04.txt");
@@ -101,7 +111,7 @@ class Day04Test {
         var result = Day04.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(2005);
     }
 
 }

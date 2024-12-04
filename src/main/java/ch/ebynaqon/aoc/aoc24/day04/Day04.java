@@ -94,7 +94,43 @@ interface Day04 {
     }
 
     static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
+        List<String> lines = input.getLines();
+        int rows = lines.size();
+        int cols = lines.getFirst().length();
+        int xmasCount = 0;
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < cols - 1; col++) {
+                if (isXMAS(row, col, lines)) {
+                    xmasCount++;
+                }
+            }
+        }
+        return xmasCount;
     }
+
+    static boolean isXMAS(int row, int col, List<String> lines) {
+        Cross result = getCross(row, col, lines);
+        return ("MAS".equals(result.upStr()) || "SAM".equals(result.upStr())) && ("MAS".equals(result.downStr()) || "SAM".equals(result.downStr()));
+    }
+
+    static Cross getCross(int row, int col, List<String> lines) {
+        StringBuilder up = new StringBuilder();
+        StringBuilder down = new StringBuilder();
+        for (int delta = -1; delta <= 1; delta++) {
+            up.append(getCharAt(row - delta, col + delta, lines));
+            down.append(getCharAt(row + delta, col + delta, lines));
+        }
+        return new Cross(up.toString(), down.toString());
+    }
+
+    record Cross(String upStr, String downStr) {
+    }
+
+    static char getCharAt(int row, int col, List<String> lines) {
+        return lines.get(row).charAt(col);
+    }
+}
+
+record Position(int row, int col) {
+
 }
