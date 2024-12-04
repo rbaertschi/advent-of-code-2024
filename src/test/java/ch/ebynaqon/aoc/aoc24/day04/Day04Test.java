@@ -15,35 +15,47 @@ class Day04Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                123
+                456
+                789
                 """);
 
         // when
         var actual = Day04.parseProblem(input);
 
         // then
-        assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
-        )));
+        assertThat(actual).isEqualTo(new ProblemInput(
+                List.of("123", "456", "789"),
+                List.of("147", "258", "369"),
+                List.of("7", "48", "159","26","3"),
+                List.of("9", "86", "753", "42", "1")
+        ));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                MMMSXXMASM
+                MSAMXMSMSA
+                AMXSXMAAMM
+                MSAMASMSMX
+                XMASAMXAMM
+                XXAMMXXAMA
+                SMSMSASXSS
+                SAXAMASAAA
+                MAMMMXMMMM
+                MXMXAXMASX
                 """);
 
         // when
         var result = Day04.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(18);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/4/input
         RawProblemInput input = RawProblemInput.fromResource("/day04.txt");
@@ -52,7 +64,7 @@ class Day04Test {
         var result = Day04.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(2639);
     }
 
     @Test
@@ -60,7 +72,16 @@ class Day04Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                MMMSXXMASM
+                MSAMXMSMSA
+                AMXSXMAAMM
+                MSAMASMSMX
+                XMASAMXAMM
+                XXAMMXXAMA
+                SMSMSASXSS
+                SAXAMASAAA
+                MAMMMXMMMM
+                MXMXAXMASX
                 """);
 
         // when
