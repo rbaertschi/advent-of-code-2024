@@ -2,26 +2,37 @@ package ch.ebynaqon.aoc.aoc24.day05;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
-import java.util.List;
+import java.util.Arrays;
 
 interface Day05 {
 
     static ProblemInput parseProblem(RawProblemInput input) {
-        List<ProblemSample> samples = input.getLines().stream().map(Day05::parseLine).toList();
-        return new ProblemInput(samples);
+        String[] rulesAndOrders = input.getWholeInput().split("\n\n");
+        var rules = Arrays.stream(rulesAndOrders[0].split("\n")).map(Day05::parseRule).toList();
+        var orders = Arrays.stream(rulesAndOrders[1].split("\n")).map(Day05::parsePrintOrder).toList();
+        return new ProblemInput(rules, orders);
     }
 
-    private static ProblemSample parseLine(String input) {
-        return new ProblemSample(Long.parseLong(input));
+    private static OrderingRule parseRule(String input) {
+        String[] parts = input.split("\\|");
+        return new OrderingRule(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+    }
+
+    private static PrintOrder parsePrintOrder(String input) {
+        return new PrintOrder(Arrays.stream(input.split(",")).map(Integer::parseInt).toList());
     }
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.samples().stream().mapToLong(ProblemSample::value).min().orElseThrow();
+
+        return problem.printOrders().stream()
+                .filter(printOrder -> printOrder.isInCorrectOrder(problem.rules()))
+                .mapToInt(PrintOrder::getMiddlePage)
+                .sum();
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.samples().stream().mapToLong(ProblemSample::value).max().orElseThrow();
+        return 0;
     }
 }
