@@ -33,6 +33,10 @@ interface Day05 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        return problem.printOrders().stream()
+                .filter(printOrder -> !printOrder.isInCorrectOrder(problem.rules()))
+                .map(printOrder -> printOrder.putInCorrectOrder(problem.rulesMap()))
+                .mapToInt(PrintOrder::getMiddlePage)
+                .sum();
     }
 }

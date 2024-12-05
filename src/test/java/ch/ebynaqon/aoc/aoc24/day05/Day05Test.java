@@ -9,12 +9,31 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Solving puzzle https://adventofcode.com/2024/day/5
 class Day05Test {
+    @Nested
+    class ProblemInputTest {
+        @Test
+        void rulesMap() {
+            ProblemInput input = new ProblemInput(List.of(
+                    new OrderingRule(1, 2),
+                    new OrderingRule(3, 4),
+                    new OrderingRule(2, 3)
+            ), List.of());
+
+            assertThat(input.rulesMap()).isEqualTo(Map.of(
+                    1, List.of(2,3,4),
+                    2, List.of(3,4),
+                    3, List.of(4)
+            ));
+        }
+    }
+
     @Nested
     class PrintOrderTest {
         @Test
@@ -124,7 +143,6 @@ class Day05Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -162,11 +180,10 @@ class Day05Test {
         var result = Day05.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(123);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day05.txt");
