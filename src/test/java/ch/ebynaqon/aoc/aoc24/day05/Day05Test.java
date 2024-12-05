@@ -16,23 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 // Solving puzzle https://adventofcode.com/2024/day/5
 class Day05Test {
-    @Nested
-    class ProblemInputTest {
-        @Test
-        void rulesMap() {
-            ProblemInput input = new ProblemInput(List.of(
-                    new OrderingRule(1, 2),
-                    new OrderingRule(3, 4),
-                    new OrderingRule(2, 3)
-            ), List.of());
-
-            assertThat(input.rulesMap()).isEqualTo(Map.of(
-                    1, List.of(2,3,4),
-                    2, List.of(3,4),
-                    3, List.of(4)
-            ));
-        }
-    }
 
     @Nested
     class PrintOrderTest {
@@ -192,7 +175,7 @@ class Day05Test {
         var result = Day05.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(7380);
     }
 
 }

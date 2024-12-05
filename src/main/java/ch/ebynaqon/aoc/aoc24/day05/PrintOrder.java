@@ -3,9 +3,8 @@ package ch.ebynaqon.aoc.aoc24.day05;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
-public record PrintOrder(List<Integer> pages) {
+record PrintOrder(List<Integer> pages) {
     public PrintOrder {
         if (pages.size() % 2 == 0) {
             throw new IllegalArgumentException("pages must be odd");
@@ -33,40 +32,29 @@ public record PrintOrder(List<Integer> pages) {
         return true;
     }
 
-    public PrintOrder putInCorrectOrder(Map<Integer, List<Integer>> rulesMap) {
-        ArrayList<Integer> pagesInCorrectOrder = new ArrayList<>(pages.size());
-        HashSet<Integer> pagesAlreadyUsed = new HashSet<>();
-        for (int posToFill = 0; posToFill < pages.size(); posToFill++) {
-            var next = findNextPage(pagesAlreadyUsed, rulesMap);
-            pagesInCorrectOrder.add(next);
-            pagesAlreadyUsed.add(next);
+    public PrintOrder putInCorrectOrder(List<OrderingRule> rules) {
+        var relevantRules = filterRelevantRules(rules);
+        HashSet<Integer> pagesToSort = new HashSet<>(pages);
+        ArrayList<Integer> sortedPages = new ArrayList<>();
+        while (!pagesToSort.isEmpty()) {
+            getNextPage(pagesToSort, relevantRules, sortedPages);
         }
-        return new PrintOrder(pagesInCorrectOrder);
+        return new PrintOrder(sortedPages);
     }
 
-    private Integer findNextPage(HashSet<Integer> pagesAlreadyUsed, Map<Integer, List<Integer>> rulesMap) {
-        for (int posToCheck = 0; posToCheck < pages.size(); posToCheck++) {
-            if (isNext(posToCheck, pagesAlreadyUsed, rulesMap)) {
-                return pages.get(posToCheck);
-            }
-        }
-        throw new IllegalStateException("Should not be reached");
+    private List<OrderingRule> filterRelevantRules(List<OrderingRule> rules) {
+        return rules.stream().filter(rule -> pages.contains(rule.pageBefore())
+                                             || pages.contains(rule.pageAfter())).toList();
     }
 
-    private boolean isNext(int posToCheck, HashSet<Integer> pagesAlreadyUsed, Map<Integer, List<Integer>> rulesMap) {
-        var pageToCheck = pages.get(posToCheck);
-        if (pagesAlreadyUsed.contains(pageToCheck)) {
-            return false;
-        }
-
-        for (int posToCheckAgainst = 0; posToCheckAgainst < pages.size(); posToCheckAgainst++) {
-            var pageToCheckAgainst = pages.get(posToCheckAgainst);
-            if (posToCheck != posToCheckAgainst && !pagesAlreadyUsed.contains(pageToCheckAgainst)) {
-                if (rulesMap.containsKey(pageToCheckAgainst) && rulesMap.get(pageToCheckAgainst).contains(pageToCheck)) {
-                    return false;
-                }
+    private static void getNextPage(HashSet<Integer> pagesToSort, List<OrderingRule> relevantRules, ArrayList<Integer> sortedPages) {
+        for (Integer pageToCheck : pagesToSort) {
+            if (relevantRules.stream().noneMatch(rule ->
+                    rule.pageAfter() == pageToCheck && pagesToSort.contains(rule.pageBefore()))) {
+                sortedPages.add(pageToCheck);
+                pagesToSort.remove(pageToCheck);
+                return;
             }
         }
-        return true;
     }
 }

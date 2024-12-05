@@ -35,7 +35,7 @@ interface Day05 {
         ProblemInput problem = parseProblem(input);
         return problem.printOrders().stream()
                 .filter(printOrder -> !printOrder.isInCorrectOrder(problem.rules()))
-                .map(printOrder -> printOrder.putInCorrectOrder(problem.rulesMap()))
+                .map(printOrder -> printOrder.putInCorrectOrder(problem.rules()))
                 .mapToInt(PrintOrder::getMiddlePage)
                 .sum();
     }
