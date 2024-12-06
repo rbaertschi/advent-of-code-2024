@@ -11,14 +11,6 @@ enum Direction {
         this.deltaCol = deltaCol;
     }
 
-    public static Direction fromTo(Position currentPosition, Position nextPosition) {
-        if (currentPosition.row() == nextPosition.row()) {
-            return currentPosition.column() > nextPosition.column() ? LEFT : RIGHT;
-        } else {
-            return currentPosition.row() > nextPosition.row() ? UP : DOWN;
-        }
-    }
-
     public int getDeltaRow() {
         return deltaRow;
     }
