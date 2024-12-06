@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day06;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,20 +30,20 @@ class Day06Test {
         var actual = Day06.parseProblem(input);
 
         // then
-        assertThat(actual).isEqualTo(new ProblemInput(new Guard(new Position(6,4), Direction.UP),List.of(
-                new Position(0,4),
-                new Position(1,9),
-                new Position(3,2),
-                new Position(4,7),
-                new Position(6,1),
-                new Position(7,8),
-                new Position(8,0),
-                new Position(9,6)
+        assertThat(actual).isEqualTo(new ProblemInput(new Guard(new Position(6, 4), Direction.UP), List.of(
+                new Position(0, 4),
+                new Position(1, 9),
+                new Position(3, 2),
+                new Position(4, 7),
+                new Position(6, 1),
+                new Position(7, 8),
+                new Position(8, 0),
+                new Position(9, 6)
         ), 10, 10));
     }
 
     @Test
-    void solvePart1UsingExample() {
+    void solvePart1UsingExample() throws LoopDetected {
         // given
         RawProblemInput input = new RawProblemInput("""
                 ....#.....
@@ -67,7 +66,7 @@ class Day06Test {
     }
 
     @Test
-    void solvePart1() {
+    void solvePart1() throws LoopDetected {
         // given input from https://adventofcode.com/2024/day/6/input
         RawProblemInput input = RawProblemInput.fromResource("/day06.txt");
 
@@ -79,23 +78,30 @@ class Day06Test {
     }
 
     @Test
-    @Disabled
-    void solvePart2UsingExample() {
+    void solvePart2UsingExample() throws LoopDetected {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                ....#.....
+                .........#
+                ..........
+                ..#.......
+                .......#..
+                ..........
+                .#..^.....
+                ........#.
+                #.........
+                ......#...
                 """);
 
         // when
         var result = Day06.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(6);
     }
 
     @Test
-    @Disabled
-    void solvePart2() {
+    void solvePart2() throws LoopDetected {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day06.txt");
 
@@ -103,7 +109,7 @@ class Day06Test {
         var result = Day06.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(1933);
     }
 
 }
