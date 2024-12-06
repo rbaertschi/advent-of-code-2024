@@ -15,35 +15,58 @@ class Day06Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                ....#.....
+                .........#
+                ..........
+                ..#.......
+                .......#..
+                ..........
+                .#..^.....
+                ........#.
+                #.........
+                ......#...
                 """);
 
         // when
         var actual = Day06.parseProblem(input);
 
         // then
-        assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
-        )));
+        assertThat(actual).isEqualTo(new ProblemInput(new Guard(new Position(6,4), Direction.UP),List.of(
+                new Position(0,4),
+                new Position(1,9),
+                new Position(3,2),
+                new Position(4,7),
+                new Position(6,1),
+                new Position(7,8),
+                new Position(8,0),
+                new Position(9,6)
+        ), 10, 10));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                ....#.....
+                .........#
+                ..........
+                ..#.......
+                .......#..
+                ..........
+                .#..^.....
+                ........#.
+                #.........
+                ......#...
                 """);
 
         // when
         var result = Day06.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(41);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/6/input
         RawProblemInput input = RawProblemInput.fromResource("/day06.txt");
@@ -52,7 +75,7 @@ class Day06Test {
         var result = Day06.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(5095);
     }
 
     @Test
