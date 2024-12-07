@@ -34,8 +34,14 @@ record Equation(long testValue, List<Long> operands) {
                || canSolveWithConcat(testValue, concat(currentValue, operands.getFirst()), operands.subList(1, operands.size()));
     }
 
-    private static Long concat(Long first, Long second) {
-        return Long.parseLong(first.toString() + second.toString());
+    static long concat(long left, long right) {
+        long result = left;
+        long test = right;
+        while (test > 0) {
+            result *= 10;
+            test = test / 10;
+        }
+        return result + right;
     }
 }
 
