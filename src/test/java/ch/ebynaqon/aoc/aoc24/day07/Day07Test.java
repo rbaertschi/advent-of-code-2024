@@ -15,7 +15,15 @@ class Day07Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                190: 10 19
+                3267: 81 40 27
+                83: 17 5
+                156: 15 6
+                7290: 6 8 6 15
+                161011: 16 10 13
+                192: 17 8 14
+                21037: 9 7 18 13
+                292: 11 6 16 20
                 """);
 
         // when
@@ -23,27 +31,41 @@ class Day07Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
+        new Equation(190L, List.of(10L, 19L)),
+        new Equation(3267L, List.of(81L, 40L, 27L)),
+        new Equation(83L, List.of(17L, 5L)),
+        new Equation(156L, List.of(15L, 6L)),
+        new Equation(7290L, List.of(6L, 8L, 6L, 15L)),
+        new Equation(161011L, List.of(16L, 10L, 13L)),
+        new Equation(192L, List.of(17L, 8L, 14L)),
+        new Equation(21037L, List.of(9L, 7L, 18L, 13L)),
+        new Equation(292L, List.of(11L, 6L, 16L, 20L))
         )));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                190: 10 19
+                3267: 81 40 27
+                83: 17 5
+                156: 15 6
+                7290: 6 8 6 15
+                161011: 16 10 13
+                192: 17 8 14
+                21037: 9 7 18 13
+                292: 11 6 16 20
                 """);
 
         // when
         var result = Day07.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(3749L);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/7/input
         RawProblemInput input = RawProblemInput.fromResource("/day07.txt");
@@ -52,7 +74,7 @@ class Day07Test {
         var result = Day07.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(975671981569L);
     }
 
     @Test
@@ -60,7 +82,15 @@ class Day07Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                190: 10 19
+                3267: 81 40 27
+                83: 17 5
+                156: 15 6
+                7290: 6 8 6 15
+                161011: 16 10 13
+                192: 17 8 14
+                21037: 9 7 18 13
+                292: 11 6 16 20
                 """);
 
         // when
