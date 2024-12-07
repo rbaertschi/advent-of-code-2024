@@ -26,7 +26,7 @@ interface Day07 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.samples().stream().mapToLong(Equation::testValue).max().orElseThrow();
+        return problem.samples().stream().filter(Equation::canBeSolvedWithConcat).mapToLong(Equation::testValue).sum();
     }
 }
 
