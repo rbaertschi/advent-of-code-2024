@@ -37,21 +37,45 @@ interface Day08 {
                 for (int j = i + 1; j < numberOfAntennas; j++) {
                     Position second = antennas.get(j);
                     Delta delta = first.deltaTo(second);
-                    antinodes.add(first.minus(delta));
-                    antinodes.add(second.plus(delta));
+                    Position next = first.minus(delta);
+                    if (problem.isWithinBounds(next)) {
+                        antinodes.add(next);
+                    }
+                    next = second.plus(delta);
+                    if (problem.isWithinBounds(next)) {
+                        antinodes.add(next);
+                    }
                 }
             }
         }
-        return antinodes.stream().filter(antinode -> isWithinBounds(antinode, problem.rows(), problem.columns())).count();
-    }
-
-    static boolean isWithinBounds(Position position, int rows, int columns) {
-        return position.row() >= 0 && position.row() < rows && position.column() >= 0 && position.column() < columns;
+        return antinodes.stream().filter(problem::isWithinBounds).count();
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        HashSet<Position> antinodes = new HashSet<>();
+        for (List<Position> antennas : problem.antennasByFrequency().values()) {
+            int numberOfAntennas = antennas.size();
+            for (int i = 0; i < numberOfAntennas; i++) {
+                Position first = antennas.get(i);
+                for (int j = i + 1; j < numberOfAntennas; j++) {
+                    Position second = antennas.get(j);
+                    Delta delta = first.deltaTo(second);
+                    antinodes.add(first);
+                    Position next = second;
+                    while (problem.isWithinBounds(next)) {
+                        antinodes.add(next);
+                        next = next.plus(delta);
+                    }
+                    next = first.minus(delta);
+                    while (problem.isWithinBounds(next)) {
+                        antinodes.add(next);
+                        next = next.minus(delta);
+                    }
+                }
+            }
+        }
+        return antinodes.size();
     }
 }
 
