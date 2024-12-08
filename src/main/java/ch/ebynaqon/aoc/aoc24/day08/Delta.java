@@ -1,5 +1,4 @@
 package ch.ebynaqon.aoc.aoc24.day08;
 
-record ProblemSample(long value) {
+public record Delta(int row, int col) {
 }
-
