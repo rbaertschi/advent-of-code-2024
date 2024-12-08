@@ -28,31 +28,14 @@ interface Day08 {
     }
 
     static long solvePart1(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        HashSet<Position> antinodes = new HashSet<>();
-        for (List<Position> antennas : problem.antennasByFrequency().values()) {
-            int numberOfAntennas = antennas.size();
-            for (int i = 0; i < numberOfAntennas; i++) {
-                Position first = antennas.get(i);
-                for (int j = i + 1; j < numberOfAntennas; j++) {
-                    Position second = antennas.get(j);
-                    Delta delta = first.deltaTo(second);
-                    Position next = first.minus(delta);
-                    if (problem.isWithinBounds(next)) {
-                        antinodes.add(next);
-                    }
-                    next = second.plus(delta);
-                    if (problem.isWithinBounds(next)) {
-                        antinodes.add(next);
-                    }
-                }
-            }
-        }
-        return antinodes.stream().filter(problem::isWithinBounds).count();
+        return countAntinodes(parseProblem(input), Day08::getAntinodes);
     }
 
     static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
+        return countAntinodes(parseProblem(input), Day08::getAntinodesWithResonance);
+    }
+
+    private static int countAntinodes(ProblemInput problem, AntinodesFinder antinodesFinder) {
         HashSet<Position> antinodes = new HashSet<>();
         for (List<Position> antennas : problem.antennasByFrequency().values()) {
             int numberOfAntennas = antennas.size();
@@ -60,22 +43,52 @@ interface Day08 {
                 Position first = antennas.get(i);
                 for (int j = i + 1; j < numberOfAntennas; j++) {
                     Position second = antennas.get(j);
-                    Delta delta = first.deltaTo(second);
-                    antinodes.add(first);
-                    Position next = second;
-                    while (problem.isWithinBounds(next)) {
-                        antinodes.add(next);
-                        next = next.plus(delta);
-                    }
-                    next = first.minus(delta);
-                    while (problem.isWithinBounds(next)) {
-                        antinodes.add(next);
-                        next = next.minus(delta);
-                    }
+                    antinodes.addAll(antinodesFinder.find(first, second, problem::isWithinBounds));
                 }
             }
         }
         return antinodes.size();
     }
+
+    private static List<Position> getAntinodes(Position first, Position second, BoundsCheck boundsCheck) {
+        List<Position> antinodePositions = new ArrayList<>();
+        Delta delta = first.deltaTo(second);
+        Position next = first.minus(delta);
+        if (boundsCheck.isWithinBounds(next)) {
+            antinodePositions.add(next);
+        }
+        next = second.plus(delta);
+        if (boundsCheck.isWithinBounds(next)) {
+            antinodePositions.add(next);
+        }
+        return antinodePositions;
+    }
+
+    private static List<Position> getAntinodesWithResonance(Position firstPosition, Position secondPosition, BoundsCheck boundsCheck) {
+        List<Position> antinodePositions = new ArrayList<>();
+        Delta delta = firstPosition.deltaTo(secondPosition);
+        antinodePositions.add(firstPosition);
+        Position next = secondPosition;
+        while (boundsCheck.isWithinBounds(next)) {
+            antinodePositions.add(next);
+            next = next.plus(delta);
+        }
+        next = firstPosition.minus(delta);
+        while (boundsCheck.isWithinBounds(next)) {
+            antinodePositions.add(next);
+            next = next.minus(delta);
+        }
+        return antinodePositions;
+    }
+}
+
+@FunctionalInterface
+interface AntinodesFinder {
+    List<Position> find(Position firstPosition, Position secondPosition, BoundsCheck boundsCheck);
+}
+
+@FunctionalInterface
+interface BoundsCheck {
+    boolean isWithinBounds(Position position);
 }
 
