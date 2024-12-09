@@ -3,6 +3,7 @@ package ch.ebynaqon.aoc.aoc24.day09;
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
 import java.util.ArrayList;
+import java.util.List;
 
 interface Day09 {
 
@@ -63,6 +64,25 @@ interface Day09 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        List<Block> blocks = problem.blocks();
+        List<FreeSpace> freeSpaces = problem.freeSpaces();
+        ArrayList<Block> compacted = new ArrayList<>(blocks.size());
+        for (int currentBlockIndex = blocks.size() - 1; currentBlockIndex >= 0; currentBlockIndex--) {
+            boolean moved = false;
+            Block currentBlock = blocks.get(currentBlockIndex);
+            for (int freeSpaceIndex = 0; freeSpaceIndex < freeSpaces.size() && !moved; freeSpaceIndex++) {
+                FreeSpace freeSpace = freeSpaces.get(freeSpaceIndex);
+                if (freeSpace.length() >= currentBlock.length() && freeSpace.start() < currentBlock.start()) {
+                    compacted.add(new Block(freeSpace.start(), currentBlock.length(), currentBlock.id()));
+                    FreeSpace updatedFreeSpace = new FreeSpace(freeSpace.start() + currentBlock.length(), freeSpace.length() - currentBlock.length());
+                    freeSpaces.set(freeSpaceIndex, updatedFreeSpace);
+                    moved = true;
+                }
+            }
+            if (!moved) {
+                compacted.add(currentBlock);
+            }
+        }
+        return compacted.stream().mapToLong(Block::checksum).sum();
     }
 }
