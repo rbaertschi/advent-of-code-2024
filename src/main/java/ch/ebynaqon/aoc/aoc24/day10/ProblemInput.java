@@ -1,7 +1,5 @@
 package ch.ebynaqon.aoc.aoc24.day10;
 
-import java.util.List;
-
 record ProblemInput(int rows, int cols, int[][] heightMap) {
     public boolean isWithinBounds(Position position) {
         return position.row() >= 0 && position.row() < rows && position.col() >= 0 && position.col() < cols;

@@ -1,10 +1,7 @@
 package ch.ebynaqon.aoc.aoc24.day10;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,22 +75,27 @@ class Day10Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                89010123
+                78121874
+                87430965
+                96549874
+                45678903
+                32019012
+                01329801
+                10456732
                 """);
 
         // when
         var result = Day10.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(81);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day10.txt");
@@ -102,7 +104,7 @@ class Day10Test {
         var result = Day10.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(1225);
     }
 
 }

@@ -2,11 +2,14 @@ package ch.ebynaqon.aoc.aoc24.day10;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 interface Day10 {
 
@@ -28,24 +31,28 @@ interface Day10 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        Map<Position, Set<Position>> peaksReachable = new HashMap<>();
+        return solveWithScoreMapper(problem, peaks -> new HashSet<>(peaks).size());
+    }
+
+    private static int solveWithScoreMapper(ProblemInput problem, Function<List<Position>, Integer> scoreMapper) {
+        Map<Position, List<Position>> peaksReachable = new HashMap<>();
         int result = 0;
         for (int row = 0; row < problem.rows(); row++) {
             for (int column = 0; column < problem.cols(); column++) {
                 Position position = new Position(row, column);
                 if (problem.getHeight(position) == 0) {
-                    result += peaksReachableFrom(position, problem, peaksReachable).size();
+                    result += scoreMapper.apply(peaksReachableFrom(position, problem, peaksReachable));
                 }
             }
         }
         return result;
     }
 
-    static Set<Position> peaksReachableFrom(Position position, ProblemInput problem, Map<Position, Set<Position>> peaksReachable) {
+    static List<Position> peaksReachableFrom(Position position, ProblemInput problem, Map<Position, List<Position>> peaksReachable) {
         if (peaksReachable.containsKey(position)) {
             return peaksReachable.get(position);
         }
-        Set<Position> result = new HashSet<>();
+        List<Position> result = new ArrayList<>();
         int currentHeight = problem.getHeight(position);
         if (currentHeight == 9) {
             result.add(position);
@@ -65,7 +72,7 @@ interface Day10 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        return solveWithScoreMapper(problem, List::size);
     }
 }
 
