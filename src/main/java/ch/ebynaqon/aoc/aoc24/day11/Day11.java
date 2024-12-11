@@ -2,6 +2,7 @@ package ch.ebynaqon.aoc.aoc24.day11;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,18 @@ interface Day11 {
         return stoneCounts.values().stream().mapToInt(Long::intValue).sum();
     }
 
+    static BigInteger solvePart2(RawProblemInput input) {
+        Map<Long, Long> stoneCounts = parseProblem(input);
+        for (int i = 0; i < 75; i++) {
+            stoneCounts = evolve(stoneCounts);
+        }
+        BigInteger reslut = BigInteger.ZERO;
+        for (long stoneCount : stoneCounts.values()) {
+            reslut = reslut.add(BigInteger.valueOf(stoneCount));
+        }
+        return reslut;
+    }
+
     static Map<Long, Long> evolve(Map<Long, Long> stoneCounts) {
         HashMap<Long, Long> nextStoneCount = new HashMap<>();
         for (Map.Entry<Long, Long> entry : stoneCounts.entrySet()) {
@@ -37,9 +50,6 @@ interface Day11 {
     }
 
     static long[] evolve(long stoneValue) {
-        /*If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
-If the stone is engraved with a number that has an even number of digits, it is replaced by two stones. The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone. (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
-If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.*/
         if (stoneValue == 0) {
             return new long[]{1};
         }
@@ -63,11 +73,6 @@ If none of the other rules apply, the stone is replaced by a new stone; the old 
             result++;
         }
         return result;
-    }
-
-    static long solvePart2(RawProblemInput input) {
-        Map<Long, Long> problem = parseProblem(input);
-        return 0;
     }
 }
 

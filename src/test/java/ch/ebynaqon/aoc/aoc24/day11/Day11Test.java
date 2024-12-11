@@ -1,14 +1,12 @@
 package ch.ebynaqon.aoc.aoc24.day11;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -61,22 +59,6 @@ class Day11Test {
     }
 
     @Test
-    @Disabled
-    void solvePart2UsingExample() {
-        // given
-        RawProblemInput input = new RawProblemInput("""
-                42
-                """);
-
-        // when
-        var result = Day11.solvePart2(input);
-
-        // then
-        assertThat(result).isEqualTo(42);
-    }
-
-    @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day11.txt");
@@ -85,7 +67,7 @@ class Day11Test {
         var result = Day11.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(new BigInteger("239413123020116"));
     }
 
     @ParameterizedTest
