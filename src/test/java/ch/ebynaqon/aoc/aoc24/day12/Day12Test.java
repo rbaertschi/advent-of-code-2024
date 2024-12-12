@@ -1,13 +1,55 @@
 package ch.ebynaqon.aoc.aoc24.day12;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Solving puzzle https://adventofcode.com/2024/day/12
 class Day12Test {
+
+    public static Stream<Arguments> mapsAndCost() {
+        return Stream.of(
+                Arguments.arguments("""
+                        AAAA
+                        BBCD
+                        BBCC
+                        EEEC
+                        """, 80),
+                Arguments.arguments("""
+                        EEEEE
+                        EXXXX
+                        EEEEE
+                        EXXXX
+                        EEEEE
+                        """, 236),
+                Arguments.arguments("""
+                        AAAAAA
+                        AAABBA
+                        AAABBA
+                        ABBAAA
+                        ABBAAA
+                        AAAAAA
+                        """, 368),
+                Arguments.arguments("""
+                        RRRRIICCFF
+                        RRRRIICCCF
+                        VVRRRCCFFF
+                        VVRCCCJFFF
+                        VVVVCJJCFE
+                        VVIVCCJJEE
+                        VVIIICJJEE
+                        MIIIIIJJEE
+                        MIIISIJEEE
+                        MMMISSJEEE
+                        """, 1206)
+        );
+    }
 
     @Test
     void parseProblemInput() {
@@ -83,23 +125,20 @@ class Day12Test {
         assertThat(result).isEqualTo(1465968);
     }
 
-    @Test
-    @Disabled
-    void solvePart2UsingExample() {
+    @ParameterizedTest
+    @MethodSource("mapsAndCost")
+    void solvePart2UsingExamples(String map, int expectedCost) {
         // given
-        RawProblemInput input = new RawProblemInput("""
-                42
-                """);
+        RawProblemInput input = new RawProblemInput(map);
 
         // when
         var result = Day12.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(expectedCost);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day12.txt");
@@ -108,7 +147,7 @@ class Day12Test {
         var result = Day12.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(897702);
     }
 
 }

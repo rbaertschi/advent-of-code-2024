@@ -2,7 +2,7 @@ package ch.ebynaqon.aoc.aoc24.day12;
 
 import java.util.List;
 
-public record Position(int row, int column) {
+record Position(int row, int column) {
     public List<Position> neighbours() {
         return List.of(
                 new Position(row - 1, column),

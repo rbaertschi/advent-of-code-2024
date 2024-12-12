@@ -2,6 +2,7 @@ package ch.ebynaqon.aoc.aoc24.day12;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,10 +27,15 @@ interface Day12 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
+        ArrayList<GardenRegion> regions = findGardenRegions(problem);
+        return regions.stream().mapToInt(region -> region.area() * region.perimeter()).sum();
+    }
+
+    private static ArrayList<GardenRegion> findGardenRegions(ProblemInput problem) {
+        ArrayList<GardenRegion> regions = new ArrayList<>();
         List<GardenPlot> allPlots = problem.allPlots();
         HashSet<GardenPlot> remainingPlots = new HashSet<>(allPlots);
         Queue<GardenPlot> plotsToCheck = new LinkedList<>();
-        int result = 0;
         while (!remainingPlots.isEmpty()) {
             GardenPlot startingPlot = remainingPlots.stream().findFirst().get();
             char plant = startingPlot.plant();
@@ -37,10 +43,12 @@ interface Day12 {
             remainingPlots.remove(startingPlot);
             int area = 1;
             int perimeter = 0;
+            List<Fence> fences = new ArrayList<>();
             while (!plotsToCheck.isEmpty()) {
                 GardenPlot currentPlot = plotsToCheck.poll();
                 for (Position neighbour : currentPlot.position().neighbours()) {
                     if (!problem.isWithinBounds(neighbour)) {
+                        fences.add(new Fence(currentPlot.position(), neighbour));
                         perimeter++;
                     } else {
                         GardenPlot neighbourPlot = problem.getPlot(neighbour);
@@ -51,19 +59,21 @@ interface Day12 {
                                 remainingPlots.remove(neighbourPlot);
                             }
                         } else {
+                            fences.add(new Fence(currentPlot.position(), neighbour));
                             perimeter++;
                         }
                     }
                 }
             }
-            result += area * perimeter;
+            regions.add(new GardenRegion(area, perimeter, fences));
         }
-        return result;
+        return regions;
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        ArrayList<GardenRegion> regions = findGardenRegions(problem);
+        return regions.stream().mapToInt(region -> region.area() * region.numberOfSides()).sum();
     }
 }
 
