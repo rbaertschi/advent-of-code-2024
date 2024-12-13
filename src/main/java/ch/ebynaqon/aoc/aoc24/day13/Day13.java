@@ -14,33 +14,41 @@ interface Day13 {
                                            "Button B: X\\+(\\d+), Y\\+(\\d+)\\n" +
                                            "Prize: X=(\\d+), Y=(\\d+)");
 
-    static ProblemInput parseProblem(RawProblemInput input) {
+    static ProblemInput parseProblem(RawProblemInput input, long prizeOffset) {
         List<Game> games = Arrays.stream(input.getWholeInput().split("\\n\\n"))
                 .map(String::trim)
-                .map(Day13::parseGame)
+                .map(gameInput -> parseGame(gameInput, prizeOffset))
                 .toList();
         return new ProblemInput(games);
     }
 
-    private static Game parseGame(String input) {
+    private static Game parseGame(String input, long prizeOffset) {
         Matcher matcher = GAME_PATTERN.matcher(input);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid input: " + input);
         }
-        Vector buttonA = new Vector(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
-        Vector buttonB = new Vector(Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
-        Vector prize = new Vector(Integer.parseInt(matcher.group(5)), Integer.parseInt(matcher.group(6)));
+        Vector buttonA = new Vector(Long.parseLong(matcher.group(1)), Long.parseLong(matcher.group(2)));
+        Vector buttonB = new Vector(Long.parseLong(matcher.group(3)), Long.parseLong(matcher.group(4)));
+        Vector prize = new Vector(Long.parseLong(matcher.group(5)) + prizeOffset, Long.parseLong(matcher.group(6)) + prizeOffset);
         return new Game(buttonA, buttonB, prize);
     }
 
     static long solvePart1(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return problem.games().stream().map(Game::minTokensToWin).filter(Optional::isPresent).mapToLong(Optional::get).sum();
+        ProblemInput problem = parseProblem(input, 0);
+        return problem.games().stream()
+                .map(Game::minTokensToWin)
+                .filter(Optional::isPresent)
+                .mapToLong(Optional::get)
+                .sum();
     }
 
     static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
+        ProblemInput problem = parseProblem(input, 10000000000000L);
+        return problem.games().stream()
+                .map(Game::minTokensToWin)
+                .filter(Optional::isPresent)
+                .mapToLong(Optional::get)
+                .sum();
     }
 }
 

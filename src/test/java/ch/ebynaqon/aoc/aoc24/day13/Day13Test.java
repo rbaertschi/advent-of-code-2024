@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day13;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,7 +24,7 @@ class Day13Test {
                 """);
 
         // when
-        var actual = Day13.parseProblem(input);
+        var actual = Day13.parseProblem(input, 0);
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
@@ -83,22 +82,6 @@ class Day13Test {
     }
 
     @Test
-    @Disabled
-    void solvePart2UsingExample() {
-        // given
-        RawProblemInput input = new RawProblemInput("""
-                42
-                """);
-
-        // when
-        var result = Day13.solvePart2(input);
-
-        // then
-        assertThat(result).isEqualTo(42);
-    }
-
-    @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day13.txt");
@@ -107,7 +90,7 @@ class Day13Test {
         var result = Day13.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(87596249540359L);
     }
 
 }
