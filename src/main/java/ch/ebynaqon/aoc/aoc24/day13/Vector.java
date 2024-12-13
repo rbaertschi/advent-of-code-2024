@@ -1,5 +1,4 @@
 package ch.ebynaqon.aoc.aoc24.day13;
 
-record ProblemSample(long value) {
+record Vector(int x, int y) {
 }
-
