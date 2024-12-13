@@ -2,7 +2,6 @@ package ch.ebynaqon.aoc.aoc24.day11;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,16 +24,12 @@ interface Day11 {
         return stoneCounts.values().stream().mapToInt(Long::intValue).sum();
     }
 
-    static BigInteger solvePart2(RawProblemInput input) {
+    static long solvePart2(RawProblemInput input) {
         Map<Long, Long> stoneCounts = parseProblem(input);
         for (int i = 0; i < 75; i++) {
             stoneCounts = evolve(stoneCounts);
         }
-        BigInteger reslut = BigInteger.ZERO;
-        for (long stoneCount : stoneCounts.values()) {
-            reslut = reslut.add(BigInteger.valueOf(stoneCount));
-        }
-        return reslut;
+        return stoneCounts.values().stream().mapToLong(Long::longValue).sum();
     }
 
     static Map<Long, Long> evolve(Map<Long, Long> stoneCounts) {

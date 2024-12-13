@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class Template {
+class Template {
     public static void main(String[] args) throws IOException {
         int day = 13;
         String dayWithLeadingZero = String.format("%02d", day);
         Path javaSourcePackage = Path.of("src/main/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
         Path javaTestPackage = Path.of("src/test/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
+        if (javaSourcePackage.toFile().exists()) {
+            System.out.printf("Path %s already exists!%n", javaSourcePackage);
+            return;
+        }
         javaSourcePackage.toFile().mkdirs();
         javaTestPackage.toFile().mkdirs();
         Path testResource = Path.of("src/test/resources/day" + dayWithLeadingZero + ".txt");

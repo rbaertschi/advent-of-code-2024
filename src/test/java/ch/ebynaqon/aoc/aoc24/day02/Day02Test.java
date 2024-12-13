@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day02;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

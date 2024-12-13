@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -67,7 +66,7 @@ class Day11Test {
         var result = Day11.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(new BigInteger("239413123020116"));
+        assertThat(result).isEqualTo(239413123020116L);
     }
 
     @ParameterizedTest
