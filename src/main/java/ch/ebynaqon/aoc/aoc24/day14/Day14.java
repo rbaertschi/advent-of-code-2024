@@ -79,7 +79,7 @@ interface Day14 {
                 robotPositions.set(i, nextPosition);
             }
             int stats = numberOfMirroredPoints(robotPositions, width, height);
-            if (stats > 200) {
+            if (stats > robotPositions.size() / 2) {
                 if (PRINT_RESULT) {
                     System.out.println("========== Seconds: " + seconds + " ==========");
                     System.out.println(stats);
@@ -91,43 +91,40 @@ interface Day14 {
     }
 
     static int numberOfMirroredPoints(List<Position> robotPositions, int width, int height) {
-        List<List<Integer>> xValuesByRow = new ArrayList<>(height);
-        for (int i = 0; i < height; i++) {
-            xValuesByRow.add(new ArrayList<>());
-        }
-        for (Position position : robotPositions) {
-            xValuesByRow.get(position.y()).add(position.x());
-        }
-        int[] averages = new int[height];
+        int[][] xs = new int[height][width];
+        int[] counts = new int[height];
         int average = 0;
-        for (int y = 0; y < height; y++) {
-            List<Integer> xValues = xValuesByRow.get(y);
-            int sum = 0;
-            int count = 0;
-            for (int x : xValues) {
-                sum += x;
-                count++;
-            }
-            if (count > 0) {
-                averages[y] = sum / count;
-                average += averages[y];
-            }
+        for (Position position : robotPositions) {
+            int count = counts[position.y()];
+            xs[position.y()][count] = position.x();
+            counts[position.y()] = count + 1;
+            average += position.x();
         }
-        average /= height;
-        int mirroredPoints = 0;
-        for (int y = 0; y < height; y++) {
-            List<Integer> xs = xValuesByRow.get(y);
-            for (int x : xs) {
-                int mirrorX = average + (average - x);
-                for (int otherX : xs) {
-                    if (x != otherX && Math.abs(otherX - mirrorX) < 1) {
+        average /= robotPositions.size();
+        int maxMirroredPoints = 0;
+        for (int mirrorColumn = average - 10; mirrorColumn < average + 10; mirrorColumn++) {
+            int mirroredPoints = 0;
+            for (int y = 0; y < height; y++) {
+                int count = counts[y];
+                int[] xValues = xs[y];
+                for (int i = 0; i < count; i++) {
+                    int x = xValues[i];
+                    if (x < mirrorColumn) {
+                        int mirrorX = mirrorColumn + (mirrorColumn - x);
+                        for (int j = 0; j < count; j++) {
+                            int otherX = xValues[j];
+                            if (x != otherX && otherX == mirrorX) {
+                                mirroredPoints+=2;
+                            }
+                        }
+                    } else if (x == mirrorColumn) {
                         mirroredPoints++;
                     }
                 }
             }
+            maxMirroredPoints = Math.max(maxMirroredPoints, mirroredPoints);
         }
-
-        return mirroredPoints;
+        return maxMirroredPoints;
     }
 
     static void print(List<Position> positions, int width, int height) {
