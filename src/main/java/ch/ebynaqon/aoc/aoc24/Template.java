@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 class Template {
     public static void main(String[] args) throws IOException {
-        int day = 14;
+        int day = 15;
         String dayWithLeadingZero = String.format("%02d", day);
         Path javaSourcePackage = Path.of("src/main/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
         Path javaTestPackage = Path.of("src/test/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
@@ -14,8 +14,10 @@ class Template {
             System.out.printf("Path %s already exists!%n", javaSourcePackage);
             return;
         }
-        javaSourcePackage.toFile().mkdirs();
-        javaTestPackage.toFile().mkdirs();
+        if (!javaSourcePackage.toFile().mkdirs() || !javaTestPackage.toFile().mkdirs()) {
+            System.out.println("Failed to create packages");
+            return;
+        }
         Path testResource = Path.of("src/test/resources/day" + dayWithLeadingZero + ".txt");
         Files.writeString(testResource, "42");
         Files.writeString(javaTestPackage.resolve("Day" + dayWithLeadingZero + "Test.java"), """
