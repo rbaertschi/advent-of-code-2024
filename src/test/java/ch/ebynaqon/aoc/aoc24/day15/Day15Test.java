@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day15;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static ch.ebynaqon.aoc.aoc24.day15.Movement.DOWN;
@@ -107,7 +106,6 @@ class Day15Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -138,11 +136,10 @@ class Day15Test {
         var result = Day15.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(9021);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day15.txt");
@@ -151,7 +148,7 @@ class Day15Test {
         var result = Day15.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(1468005);
     }
 
 }

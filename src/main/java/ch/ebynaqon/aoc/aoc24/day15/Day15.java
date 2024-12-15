@@ -30,19 +30,22 @@ interface Day15 {
                 }
             }
         }
-        List<Movement> movements = Arrays.stream(mapAndMovements[1].replaceAll("\\n","").split("")).map(Movement::from).toList();
+        List<Movement> movements = Arrays.stream(mapAndMovements[1].replaceAll("\\n", "").split("")).map(Movement::from).toList();
         return new ProblemInput(robot, movements, new Warehouse(obstacles, boxes));
     }
 
     static long solvePart1(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
+        return solve(parseProblem(input));
+    }
+
+    private static int solve(ProblemInput problem) {
         Position robotPosition = problem.robotPosition();
         Warehouse warehouse = problem.warehouse();
         for (Movement movement : problem.movements()) {
             robotPosition = tryMove(robotPosition, movement, warehouse);
         }
         if (PRINT) {
-            warehouse.print();
+            warehouse.print(robotPosition);
         }
         return warehouse.boxes().stream().mapToInt(position -> position.x() + 100 * position.y()).sum();
     }
@@ -54,8 +57,7 @@ interface Day15 {
         while (!warehouse.isBlocked(pushingPositions) && !warehouse.isFree(pushingPositions)) {
             List<Box> newBoxes = warehouse.liftBoxes(pushingPositions);
             boxesToMove.addAll(newBoxes);
-            pushingPositions = newBoxes.stream().flatMap((Box box) -> box.positions().stream()
-                    .map(position -> position.move(movement))).toList();
+            pushingPositions = newBoxes.stream().flatMap((Box box) -> box.pushingPositions(movement).stream()).toList();
         }
         if (warehouse.isFree(pushingPositions)) {
             // place boxes shifted in direction of movement from where they were picked up
@@ -74,8 +76,15 @@ interface Day15 {
 
 
     static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
+        return solve(makeDoubleWide(parseProblem(input)));
+    }
+
+    static ProblemInput makeDoubleWide(ProblemInput problem) {
+        return new ProblemInput(
+                new Position(problem.robotPosition().x() * 2, problem.robotPosition().y()),
+                problem.movements(),
+                problem.warehouse().doubleWidth()
+        );
     }
 }
 
