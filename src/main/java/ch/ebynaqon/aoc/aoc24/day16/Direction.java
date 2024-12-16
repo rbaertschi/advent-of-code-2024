@@ -11,10 +11,19 @@ enum Direction {
         this.deltaCol = deltaCol;
     }
 
+    Direction opposite() {
+        return switch (this) {
+            case North -> South;
+            case South -> North;
+            case East -> West;
+            case West -> East;
+        };
+    }
+
     int turnsTo(Direction other) {
         if (this.equals(other)) {
             return 0;
-        } else if (this.ordinal() % 2 == other.ordinal() % 2) {
+        } else if (other.equals(this.opposite())) {
             return 2;
         } else {
             return 1;

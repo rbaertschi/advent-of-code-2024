@@ -2,13 +2,13 @@ package ch.ebynaqon.aoc.aoc24.day16;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import static ch.ebynaqon.aoc.aoc24.day16.Direction.East;
-import static ch.ebynaqon.aoc.aoc24.day16.Direction.North;
 import static ch.ebynaqon.aoc.aoc24.day16.Direction.South;
 import static ch.ebynaqon.aoc.aoc24.day16.Direction.West;
 
@@ -29,13 +29,7 @@ interface Day16 {
                     costs[direction.ordinal()][row][col] = Integer.MAX_VALUE;
                 }
                 switch (line.charAt(col)) {
-                    case 'S' -> {
-                        start = new Position(row, col);
-                        costs[East.ordinal()][row][col] = 0;
-                        costs[North.ordinal()][row][col] = ProblemInput.TURN_COST;
-                        costs[South.ordinal()][row][col] = ProblemInput.TURN_COST;
-                        costs[West.ordinal()][row][col] = ProblemInput.TURN_COST * 2;
-                    }
+                    case 'S' -> start = new Position(row, col);
                     case 'E' -> end = new Position(row, col);
                     case '#' -> obstacles[row][col] = true;
                 }
@@ -46,6 +40,11 @@ interface Day16 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
+        problem.setCost(problem.start(), East, 0);
+        return solve(problem);
+    }
+
+    private static int solve(ProblemInput problem) {
         Queue<ScoredPosition> toCheck = new PriorityQueue<>();
         toCheck.add(new ScoredPosition(0, problem.start()));
         while (!toCheck.isEmpty()) {
@@ -65,23 +64,36 @@ interface Day16 {
                 }
             }
         }
-        return 0;
+        throw new IllegalStateException("Failed to find a solution to the maze.");
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        problem.setCost(problem.start(), East, 0);
+        int solution = solve(problem);
+        ProblemInput reverseProblem = problem.reverse();
+        reverseProblem.setCost(reverseProblem.start(), South, 0);
+        reverseProblem.setCost(reverseProblem.start(), West, 0);
+        solve(reverseProblem);
+        List<Position> positionsAlongCheapestPaths = new ArrayList<>();
+        for (int row = 0; row < problem.rows(); row++) {
+            for (int col = 0; col < problem.cols(); col++) {
+                Position position = new Position(row, col);
+                int minCost = Integer.MAX_VALUE;
+                for (Direction direction : Direction.values()) {
+                    int cost = problem.getCost(position, direction) + reverseProblem.getCost(position, direction.opposite());
+                    minCost = Math.min(minCost, cost);
+                }
+                if (minCost == solution) {
+                    positionsAlongCheapestPaths.add(position);
+                }
+            }
+        }
+        return positionsAlongCheapestPaths.size();
     }
 }
 
 record ScoredPosition(int cost, Position position) implements Comparable<ScoredPosition> {
-    int row() {
-        return position.row();
-    }
-    int col() {
-        return position.col();
-    }
-
     @Override
     public int compareTo(ScoredPosition o) {
         return Comparator.comparingInt(ScoredPosition::cost).compare(this, o);

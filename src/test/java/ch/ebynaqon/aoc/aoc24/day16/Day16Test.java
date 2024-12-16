@@ -110,22 +110,64 @@ class Day16Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                ###############
+                #.......#....E#
+                #.#.###.#.###.#
+                #.....#.#...#.#
+                #.###.#####.#.#
+                #.#.#.......#.#
+                #.#.#####.###.#
+                #...........#.#
+                ###.#.#####.#.#
+                #...#.....#.#.#
+                #.#.#.###.#.#.#
+                #.....#...#.#.#
+                #.###.#.#.#.#.#
+                #S..#.....#...#
+                ###############
                 """);
 
         // when
         var result = Day16.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(45);
     }
 
     @Test
-    @Disabled
+    void solvePart2UsingSecondExample() {
+        // given
+        RawProblemInput input = new RawProblemInput("""
+                #################
+                #...#...#...#..E#
+                #.#.#.#.#.#.#.#.#
+                #.#.#.#...#...#.#
+                #.#.#.#.###.#.#.#
+                #...#.#.#.....#.#
+                #.#.#.#.#.#####.#
+                #.#...#.#.#.....#
+                #.#.#####.#.###.#
+                #.#.#.......#...#
+                #.#.###.#####.###
+                #.#.#...#.....#.#
+                #.#.#.#####.###.#
+                #.#.#.........#.#
+                #.#.#.#########.#
+                #S#.............#
+                #################
+                """);
+
+        // when
+        var result = Day16.solvePart2(input);
+
+        // then
+        assertThat(result).isEqualTo(64);
+    }
+
+    @Test
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day16.txt");
@@ -134,7 +176,7 @@ class Day16Test {
         var result = Day16.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(435);
     }
 
 }
