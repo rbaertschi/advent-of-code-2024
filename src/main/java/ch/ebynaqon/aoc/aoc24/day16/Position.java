@@ -1,5 +1,4 @@
 package ch.ebynaqon.aoc.aoc24.day16;
 
-record ProblemSample(long value) {
+record Position(int row, int col) {
 }
-
