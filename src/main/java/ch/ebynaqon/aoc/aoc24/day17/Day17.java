@@ -4,6 +4,7 @@ import ch.ebynaqon.aoc.helper.RawProblemInput;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 interface Day17 {
@@ -30,15 +31,15 @@ interface Day17 {
         );
     }
 
-    static int parseRegister(String register) {
-        return Integer.parseInt(register.split(":")[1].trim());
+    static long parseRegister(String register) {
+        return Long.parseLong(register.split(":")[1].trim());
     }
 
     static String solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
         OutputDevice outputDevice = new OutputDevice();
         Register register = problem.register();
-        while(register.instructionPointer() < problem.program().size()) {
+        while (register.instructionPointer() < problem.program().size()) {
             Short opCode = problem.program().get(register.instructionPointer());
             Short operand = problem.program().get(register.instructionPointer() + 1);
             register = Instruction.from(opCode, operand).process(register, outputDevice);
@@ -46,9 +47,41 @@ interface Day17 {
         return outputDevice.output();
     }
 
-    static String solvePart2(RawProblemInput input) {
+    static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return null;
+        List<Short> program = problem.program();
+        List<Integer> target = program.stream().map(Integer::valueOf).toList();
+        long result = 0L;
+        HashMap<CacheKey, Boolean> cache = new HashMap<>();
+        while (true) {
+            OutputDevice outputDevice = new OutputDevice();
+            Register register = new Register(result, problem.register().b(), problem.register().c(), 0);
+            int lastOutputLength = 0;
+            List<Integer> remaining = new ArrayList<>(target);
+            while (register.instructionPointer() < program.size()) {
+                if (cache.getOrDefault(new CacheKey(register, remaining), false)) {
+                    break;
+                }
+                Short opCode = program.get(register.instructionPointer());
+                Short operand = program.get(register.instructionPointer() + 1);
+                register = Instruction.from(opCode, operand).process(register, outputDevice);
+                int outputLength = outputDevice.outputs().size();
+                if (outputLength > lastOutputLength) {
+                    remaining = remaining.subList(outputLength - lastOutputLength, remaining.size());
+                    lastOutputLength = outputLength;
+                }
+                if (!target.subList(0, outputDevice.outputs().size()).equals(outputDevice.outputs())) {
+                    cache.put(new CacheKey(register, remaining), false);
+                    break;
+                }
+                if (remaining.isEmpty()) {
+                    return result;
+                }
+            }
+            result++;
+        }
     }
 }
 
+record CacheKey(Register register, List<Integer> remainingOutput) {
+}

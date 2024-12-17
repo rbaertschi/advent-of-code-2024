@@ -24,7 +24,7 @@ sealed interface Instruction {
     Combo operand 6 represents the value of register C.
     Combo operand 7 is reserved and will not appear in valid programs.
     */
-    default int combo(short comboOperand, Register register) {
+    default long combo(short comboOperand, Register register) {
         return switch (comboOperand) {
             case 0, 1, 2, 3 -> comboOperand;
             case 4 -> register.a();
@@ -101,7 +101,7 @@ record BXC(int ignoredOperand) implements Instruction {
 record OUT(short comboOperand) implements Instruction {
     @Override
     public Register process(Register register, OutputDevice output) {
-        output.write(combo(comboOperand, register) % 8);
+        output.write((short) (combo(comboOperand, register) % 8));
         return register.next();
     }
 }
