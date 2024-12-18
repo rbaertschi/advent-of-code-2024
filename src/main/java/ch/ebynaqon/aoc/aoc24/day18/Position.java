@@ -11,5 +11,9 @@ record Position(int x, int y) {
                 new Position(x, y - 1)
         );
     }
+
+    public String coords() {
+        return x + "," + y;
+    }
 }
 

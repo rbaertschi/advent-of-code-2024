@@ -20,7 +20,11 @@ interface Day18 {
 
     static long solvePart1(RawProblemInput input, int width, int height, int numberOfDrops) {
         ProblemInput problem = parseProblem(input, width, height);
-        boolean[][] obstacles = createObstaclesByteMap(width, height, problem.dropLocations().subList(0, numberOfDrops));
+        return solve(width, height, problem.dropLocations().subList(0, numberOfDrops));
+    }
+
+    private static int solve(int width, int height, List<Position> positions) {
+        boolean[][] obstacles = createObstaclesByteMap(width, height, positions);
         boolean[][] visited = new boolean[height][width];
         ByteMap map = new ByteMap(width, height, obstacles, visited);
         Position start = new Position(0, 0);
@@ -44,7 +48,7 @@ interface Day18 {
                 }
             }
         }
-        throw new IllegalStateException("Failed to find path from start to end!");
+        return Integer.MAX_VALUE;
     }
 
     private static boolean[][] createObstaclesByteMap(int width, int height, List<Position> positions) {
@@ -65,9 +69,16 @@ interface Day18 {
         return distance;
     }
 
-    static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input, 71, 71);
-        return 0;
+    static String solvePart2(RawProblemInput input, int width, int height) {
+        ProblemInput problem = parseProblem(input, width, height);
+        for (int i = 0; i < problem.dropLocations().size(); i++) {
+            List<Position> positions = problem.dropLocations().subList(0, i);
+            int result = solve(width, height, positions);
+            if (result == Integer.MAX_VALUE) {
+                return positions.getLast().coords();
+            }
+        }
+        throw new IllegalStateException("Failed to find byte which causes the map to become unpassable!");
     }
 }
 
