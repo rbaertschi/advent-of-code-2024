@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day17;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -82,23 +81,22 @@ class Day17Test {
                 """);
 
         // when
-        var result = Day17.solvePart2(input);
+        var result = Day17.solvePart2BruteForce(input);
 
         // then
         assertThat(result).isEqualTo(117440);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day17.txt");
 
         // when
-        var result = Day17.solvePart2(input);
+        var result = Day17.solvePart2Analytically(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(105734774294938L);
     }
 
     @Nested
