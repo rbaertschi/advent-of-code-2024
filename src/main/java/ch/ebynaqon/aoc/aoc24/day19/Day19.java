@@ -3,8 +3,10 @@ package ch.ebynaqon.aoc.aoc24.day19;
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 interface Day19 {
@@ -19,29 +21,36 @@ interface Day19 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
+        Map<String, Long> cache = new HashMap<>();
         return problem.desiredPatterns().stream()
-                .filter(desiredPattern -> isPossible(desiredPattern, new HashSet<>(problem.availablePatterns()))).count();
+                .filter(desiredPattern -> possibleCombinations(desiredPattern,
+                        new HashSet<>(problem.availablePatterns()), cache) > 0).count();
     }
 
-    static boolean isPossible(String desiredPattern, Set<String> availablePatterns) {
+    static long possibleCombinations(String desiredPattern, Set<String> availablePatterns, Map<String, Long> cache) {
         if (desiredPattern.isEmpty()) {
-            return true;
+            return 1;
         }
+        if (cache.containsKey(desiredPattern)) {
+            return cache.get(desiredPattern);
+        }
+        long possibleCombinations = 0;
         for (int i = 1; i <= desiredPattern.length(); i++) {
             String currentPattern = desiredPattern.substring(0, i);
             if (availablePatterns.contains(currentPattern)) {
-                boolean isRestPossible = isPossible(desiredPattern.substring(i), availablePatterns);
-                if (isRestPossible) {
-                    return true;
-                }
+                possibleCombinations += possibleCombinations(desiredPattern.substring(i), availablePatterns, cache);
             }
         }
-        return false;
+        cache.put(desiredPattern, possibleCombinations);
+        return possibleCombinations;
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return 0;
+        Map<String, Long> cache = new HashMap<>();
+        return problem.desiredPatterns().stream()
+                .mapToLong(desiredPattern -> possibleCombinations(desiredPattern,
+                        new HashSet<>(problem.availablePatterns()), cache)).sum();
     }
 }
 
