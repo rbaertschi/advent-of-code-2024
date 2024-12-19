@@ -15,7 +15,16 @@ class Day19Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                r, wr, b, g, bwu, rb, gb, br
+                
+                brwrr
+                bggr
+                gbbr
+                rrbgbr
+                ubwu
+                bwurrg
+                brgr
+                bbrgwb
                 """);
 
         // when
@@ -23,27 +32,43 @@ class Day19Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
+                "r", "wr", "b", "g", "bwu", "rb", "gb", "br"
+        ), List.of(
+                "brwrr",
+                "bggr",
+                "gbbr",
+                "rrbgbr",
+                "ubwu",
+                "bwurrg",
+                "brgr",
+                "bbrgwb"
         )));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                r, wr, b, g, bwu, rb, gb, br
+                
+                brwrr
+                bggr
+                gbbr
+                rrbgbr
+                ubwu
+                bwurrg
+                brgr
+                bbrgwb
                 """);
 
         // when
         var result = Day19.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(6);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/19/input
         RawProblemInput input = RawProblemInput.fromResource("/day19.txt");
@@ -52,7 +77,7 @@ class Day19Test {
         var result = Day19.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(209);
     }
 
     @Test
@@ -60,7 +85,16 @@ class Day19Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                r, wr, b, g, bwu, rb, gb, br
+                
+                brwrr
+                bggr
+                gbbr
+                rrbgbr
+                ubwu
+                bwurrg
+                brgr
+                bbrgwb
                 """);
 
         // when
