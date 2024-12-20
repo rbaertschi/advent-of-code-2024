@@ -43,7 +43,7 @@ class Day20Test {
     }
 
     @ParameterizedTest
-    @MethodSource("cheats")
+    @MethodSource("cheatsFor2Picoseconds")
     void solvePart1UsingExample(int atLeastTimeSaved, int numberOfCheats) {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -71,22 +71,6 @@ class Day20Test {
         assertThat(result).isEqualTo(numberOfCheats);
     }
 
-    public static Stream<Arguments> cheats() {
-        return Stream.of(
-                Arguments.arguments(2,  44),
-                Arguments.arguments(4,  30),
-                Arguments.arguments(6,  16),
-                Arguments.arguments(8,  14),
-                Arguments.arguments(10,  10),
-                Arguments.arguments(12,  8),
-                Arguments.arguments(20,  5),
-                Arguments.arguments(36,  4),
-                Arguments.arguments(38,  3),
-                Arguments.arguments(40,  2),
-                Arguments.arguments(64,  1)
-        );
-    }
-
     @Test
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/20/input
@@ -99,32 +83,80 @@ class Day20Test {
         assertThat(result).isEqualTo(1409);
     }
 
-    @Test
-    @Disabled
-    void solvePart2UsingExample() {
+    @ParameterizedTest
+    @MethodSource("cheatsFor20Picoseconds")
+    void solvePart2UsingExample(int atLeastTimeSaved, int numberOfCheats) {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                ###############
+                #...#...#.....#
+                #.#.#.#.#.###.#
+                #S#...#.#.#...#
+                #######.#.#.###
+                #######.#.#...#
+                #######.#.###.#
+                ###..E#...#...#
+                ###.#######.###
+                #...###...#...#
+                #.#####.#.###.#
+                #.#...#.#.#...#
+                #.#.#.#.#.#.###
+                #...#...#...###
+                ###############
                 """);
 
         // when
-        var result = Day20.solvePart2(input);
+        var result = Day20.solvePart2(input, atLeastTimeSaved);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(numberOfCheats);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day20.txt");
 
         // when
-        var result = Day20.solvePart2(input);
+        var result = Day20.solvePart2(input, 100);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(1012821);
+    }
+
+    static Stream<Arguments> cheatsFor2Picoseconds() {
+        return Stream.of(
+                Arguments.arguments(2, 44),
+                Arguments.arguments(4, 30),
+                Arguments.arguments(6, 16),
+                Arguments.arguments(8, 14),
+                Arguments.arguments(10, 10),
+                Arguments.arguments(12, 8),
+                Arguments.arguments(20, 5),
+                Arguments.arguments(36, 4),
+                Arguments.arguments(38, 3),
+                Arguments.arguments(40, 2),
+                Arguments.arguments(64, 1)
+        );
+    }
+
+    static Stream<Arguments> cheatsFor20Picoseconds() {
+        return Stream.of(
+                Arguments.arguments(50, 285),
+                Arguments.arguments(52, 253),
+                Arguments.arguments(54, 222),
+                Arguments.arguments(56, 193),
+                Arguments.arguments(58, 154),
+                Arguments.arguments(60, 129),
+                Arguments.arguments(62, 106),
+                Arguments.arguments(64, 86),
+                Arguments.arguments(66, 67),
+                Arguments.arguments(68, 55),
+                Arguments.arguments(70, 41),
+                Arguments.arguments(72, 29),
+                Arguments.arguments(74, 7),
+                Arguments.arguments(76, 3)
+        );
     }
 
 }

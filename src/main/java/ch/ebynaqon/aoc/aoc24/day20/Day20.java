@@ -30,13 +30,18 @@ interface Day20 {
     static long solvePart1(RawProblemInput input, int minPicoSecondsSaved) {
         ProblemInput problem = parseProblem(input);
         List<TrackPosition> track = computeRaceTrack(problem);
+        List<Cheat> cheats = findCheats(2, minPicoSecondsSaved, track);
+        return cheats.size();
+    }
+
+    private static List<Cheat> findCheats(int maxCheatTime, int minPicoSecondsSaved, List<TrackPosition> track) {
         List<Cheat> cheats = new ArrayList<>();
         for (int i = 0; i < track.size() - 1; i++) {
             TrackPosition from = track.get(i);
             for (int j = i + 1; j < track.size(); j++) {
                 TrackPosition to = track.get(j);
                 int distance = from.distance(to);
-                if (distance <= 2) {
+                if (distance <= maxCheatTime) {
                     int timeSaved = from.distance() - (to.distance() + distance);
                     if (timeSaved >= minPicoSecondsSaved) {
                         cheats.add(new Cheat(from.position(), to.position(), timeSaved));
@@ -44,6 +49,13 @@ interface Day20 {
                 }
             }
         }
+        return cheats;
+    }
+
+    static long solvePart2(RawProblemInput input, int minPicoSecondsSaved) {
+        ProblemInput problem = parseProblem(input);
+        List<TrackPosition> track = computeRaceTrack(problem);
+        List<Cheat> cheats = findCheats(20, minPicoSecondsSaved, track);
         return cheats.size();
     }
 
@@ -69,11 +81,6 @@ interface Day20 {
             }
         }
         return track.reversed();
-    }
-
-    static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
     }
 }
 
