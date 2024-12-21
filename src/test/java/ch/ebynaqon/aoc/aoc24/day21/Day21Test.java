@@ -40,10 +40,10 @@ class Day21Test {
         |   | 0 | A |
         +---+---+---+
         */
-        assertThat(SEVEN.pressNext(NINE)).containsExactly(RIGHT, RIGHT, PRESS);
-        assertThat(NINE.pressNext(SEVEN)).containsExactly(LEFT, LEFT, PRESS);
-        assertThat(ONE.pressNext(ENTER)).containsExactly(RIGHT, RIGHT, DOWN, PRESS);
-        assertThat(ENTER.pressNext(ONE)).containsExactly(UP, LEFT, LEFT, PRESS);
+        assertThat(SEVEN.movementsToNextPress(NINE)).containsExactly(RIGHT, RIGHT, PRESS);
+        assertThat(NINE.movementsToNextPress(SEVEN)).containsExactly(LEFT, LEFT, PRESS);
+        assertThat(ONE.movementsToNextPress(ENTER)).containsExactly(RIGHT, RIGHT, DOWN, PRESS);
+        assertThat(ENTER.movementsToNextPress(ONE)).containsExactly(UP, LEFT, LEFT, PRESS);
     }
 
     @Test
@@ -55,10 +55,10 @@ class Day21Test {
         | < | v | > |
         +---+---+---+
         */
-        assertThat(PRESS.pressNext(UP)).containsExactly(LEFT, PRESS);
-        assertThat(UP.pressNext(PRESS)).containsExactly(RIGHT, PRESS);
-        assertThat(LEFT.pressNext(UP)).containsExactly(RIGHT, UP, PRESS);
-        assertThat(UP.pressNext(LEFT)).containsExactly(DOWN, LEFT, PRESS);
+        assertThat(PRESS.movementsToNextPress(UP)).containsExactly(LEFT, PRESS);
+        assertThat(UP.movementsToNextPress(PRESS)).containsExactly(RIGHT, PRESS);
+        assertThat(LEFT.movementsToNextPress(UP)).containsExactly(RIGHT, UP, PRESS);
+        assertThat(UP.movementsToNextPress(LEFT)).containsExactly(DOWN, LEFT, PRESS);
     }
 
     @Test
@@ -104,7 +104,6 @@ class Day21Test {
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/21/input
         RawProblemInput input = RawProblemInput.fromResource("/day21.txt");
@@ -113,7 +112,7 @@ class Day21Test {
         var result = Day21.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(176452);
     }
 
     @Test

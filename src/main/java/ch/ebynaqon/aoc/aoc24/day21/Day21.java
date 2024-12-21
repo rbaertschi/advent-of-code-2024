@@ -31,25 +31,77 @@ interface Day21 {
 
     private static int calculateCodeComplexity(Code code) {
         NumericKey current = NumericKey.ENTER;
-        MovementKey currentPad1 = PRESS;
-        MovementKey currentPad2 = PRESS;
-        List<MovementKey> inputsOnThirdDirectionalKeypad = new ArrayList<>();
+        int numberOfMovements = 0;
         for (NumericKey next : code.keys()) {
-            for (MovementKey keyOnPad1 : current.pressNext(next)) {
-                for (MovementKey keyOnPad2 : currentPad1.pressNext(keyOnPad1)) {
-                    for (MovementKey keyOnPad3 : currentPad2.pressNext(keyOnPad2)) {
-                        inputsOnThirdDirectionalKeypad.add(keyOnPad3);
-                    }
-                    currentPad2 = keyOnPad2;
-                }
-                currentPad1 = keyOnPad1;
-            }
+            numberOfMovements += getMinNumberOfMovementsOnPad1(current, next);
             current = next;
         }
-        int size = inputsOnThirdDirectionalKeypad.size();
-        int numeric = code.numericValue();
-        System.out.println(toString(inputsOnThirdDirectionalKeypad));
-        return size * numeric;
+        return numberOfMovements * code.numericValue();
+    }
+
+    private static int getMinNumberOfMovementsOnPad1(NumericKey current, NumericKey next) {
+        int minNumberOfMovements = Integer.MAX_VALUE;
+        List<MovementKey> movements = current.movementsToNextPress(next);
+        for (List<MovementKey> movementVariation : validPermutationsWithPress(current, movements)) {
+            int numberOfMovements = 0;
+            MovementKey currentPad1 = PRESS;
+            for (MovementKey keyOnPad1 : movementVariation) {
+                numberOfMovements += getMinNumberOfMovementsOnPad2(currentPad1, keyOnPad1);
+                currentPad1 = keyOnPad1;
+            }
+            if (numberOfMovements < minNumberOfMovements) {
+                minNumberOfMovements = numberOfMovements;
+            }
+        }
+        return minNumberOfMovements;
+    }
+
+    private static int getMinNumberOfMovementsOnPad2(MovementKey current, MovementKey next) {
+        int minNumberOfMovements = Integer.MAX_VALUE;
+        List<MovementKey> movements = current.movementsToNextPress(next);
+        for (List<MovementKey> movementVariation : validPermutationsWithPress(current, movements)) {
+            int numberOfMovements = 0;
+            MovementKey currentPad2 = PRESS;
+            for (MovementKey keyOnPad2 : movementVariation) {
+                numberOfMovements += currentPad2.movementsToNextPress(keyOnPad2).size();
+                currentPad2 = keyOnPad2;
+            }
+            if (numberOfMovements < minNumberOfMovements) {
+                minNumberOfMovements = numberOfMovements;
+            }
+        }
+        return minNumberOfMovements;
+    }
+
+    static <T extends Key<T>> List<List<MovementKey>> validPermutationsWithPress(T start, List<MovementKey> movementsAndPress) {
+        List<MovementKey> onlyMovements = movementsAndPress.subList(0, movementsAndPress.size() - 1);
+        List<List<MovementKey>> permutations = validPermutations(start, onlyMovements);
+        permutations.forEach(movements -> movements.add(PRESS));
+        return permutations;
+    }
+
+    private static <T extends Key<T>> List<List<MovementKey>> validPermutations(T start, List<MovementKey> movements) {
+        List<List<MovementKey>> permutations = new ArrayList<>();
+        if (movements.size() > 1) {
+            for (int i = 0; i < movements.size(); i++) {
+                MovementKey firstMove = movements.get(i);
+                T nextStart = start.move(firstMove);
+                if (nextStart != null) {
+                    ArrayList<MovementKey> nextMovements = new ArrayList<>(movements.subList(0, i));
+                    nextMovements.addAll(movements.subList(i + 1, movements.size()));
+                    List<List<MovementKey>> validPermutationsOfRemainingMoves = validPermutations(nextStart, nextMovements);
+                    for (List<MovementKey> permutation : validPermutationsOfRemainingMoves) {
+                        ArrayList<MovementKey> validPermutation = new ArrayList<>();
+                        validPermutation.add(firstMove);
+                        validPermutation.addAll(permutation);
+                        permutations.add(validPermutation);
+                    }
+                }
+            }
+        } else {
+            permutations.add(movements);
+        }
+        return permutations;
     }
 
     static String toString(List<MovementKey> movements) {
@@ -78,7 +130,7 @@ record Code(List<NumericKey> keys) {
     }
 }
 
-interface Key {
+interface Key<SELF> {
     int row();
 
     int column();
@@ -90,9 +142,11 @@ interface Key {
         }
         return result;
     }
+
+    SELF move(MovementKey movement);
 }
 
-enum NumericKey implements Key {
+enum NumericKey implements Key<NumericKey> {
     SEVEN('7', 0, 0), EIGHT('8', 0, 1), NINE('9', 0, 2),
     FOUR('4', 1, 0), FIVE('5', 1, 1), SIX('6', 1, 2),
     ONE('1', 2, 0), TWO('2', 2, 1), THREE('3', 2, 2),
@@ -120,7 +174,15 @@ enum NumericKey implements Key {
         return column;
     }
 
-    public List<MovementKey> pressNext(Key target) {
+    @Override
+    public NumericKey move(MovementKey movement) {
+        return Arrays.stream(values())
+                .filter(target -> target.row() == row + movement.deltaRow() && target.column() == column + movement.deltaColumn())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<MovementKey> movementsToNextPress(NumericKey target) {
         List<MovementKey> movements = new ArrayList<>();
         if (target != this) {
             MovementKey vertical = target.row() < row() ? MovementKey.UP : MovementKey.DOWN;
@@ -142,18 +204,22 @@ enum NumericKey implements Key {
     }
 }
 
-enum MovementKey implements Key {
-    /* blank */ UP('^', 0, 1), PRESS('A', 0, 2),
-    LEFT('<', 1, 0), DOWN('v', 1, 1), RIGHT('>', 1, 2);
+enum MovementKey implements Key<MovementKey> {
+    /* blank */ UP('^', 0, 1, -1, 0), PRESS('A', 0, 2, 0, 0),
+    LEFT('<', 1, 0, 0, -1), DOWN('v', 1, 1, 1, 0), RIGHT('>', 1, 2, 0, 1);
 
     private final char c;
     private final int row;
     private final int column;
+    private final int deltaRow;
+    private final int deltaColumn;
 
-    MovementKey(char c, int row, int column) {
+    MovementKey(char c, int row, int column, int deltaRow, int deltaColumn) {
         this.c = c;
         this.row = row;
         this.column = column;
+        this.deltaRow = deltaRow;
+        this.deltaColumn = deltaColumn;
     }
 
     public int row() {
@@ -164,7 +230,23 @@ enum MovementKey implements Key {
         return column;
     }
 
-    public List<MovementKey> pressNext(Key target) {
+    public int deltaRow() {
+        return deltaRow;
+    }
+
+    public int deltaColumn() {
+        return deltaColumn;
+    }
+
+    @Override
+    public MovementKey move(MovementKey movement) {
+        return Arrays.stream(values())
+                .filter(target -> target.row() == row + movement.deltaRow() && target.column() == column + movement.deltaColumn())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<MovementKey> movementsToNextPress(MovementKey target) {
         List<MovementKey> movements = new ArrayList<>();
         if (target != this) {
             MovementKey vertical = target.row() < row() ? UP : DOWN;
