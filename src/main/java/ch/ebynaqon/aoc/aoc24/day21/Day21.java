@@ -26,50 +26,46 @@ interface Day21 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.codes().stream().mapToLong(Day21::calculateCodeComplexity).sum();
+        return problem.codes().stream().mapToLong(code -> calculateCodeComplexity(code, 2)).sum();
     }
 
-    private static int calculateCodeComplexity(Code code) {
+    static long solvePart2(RawProblemInput input) {
+        ProblemInput problem = parseProblem(input);
+        return problem.codes().stream().mapToLong(code -> calculateCodeComplexity(code, 25)).sum();
+    }
+
+    private static long calculateCodeComplexity(Code code, int numberOfRobotPads) {
+        Cache cache = new Cache(numberOfRobotPads);
         NumericKey current = NumericKey.ENTER;
-        int numberOfMovements = 0;
+        long numberOfMovements = 0;
         for (NumericKey next : code.keys()) {
-            numberOfMovements += getMinNumberOfMovementsOnPad1(current, next);
+            numberOfMovements += getMinNumberOfMovements(current, next, numberOfRobotPads, cache);
             current = next;
         }
         return numberOfMovements * code.numericValue();
     }
 
-    private static int getMinNumberOfMovementsOnPad1(NumericKey current, NumericKey next) {
-        int minNumberOfMovements = Integer.MAX_VALUE;
+    private static <T extends Key<T>> long getMinNumberOfMovements(T current, T next, int remainingRobotPads, Cache cache) {
+        if (cache.contains(remainingRobotPads, current, next)) {
+            return cache.get(remainingRobotPads, current, next);
+        }
+        if (remainingRobotPads == 0) {
+            return current.movementsToNextPress(next).size();
+        }
+        long minNumberOfMovements = Long.MAX_VALUE;
         List<MovementKey> movements = current.movementsToNextPress(next);
         for (List<MovementKey> movementVariation : validPermutationsWithPress(current, movements)) {
-            int numberOfMovements = 0;
+            long numberOfMovements = 0;
             MovementKey currentPad1 = PRESS;
             for (MovementKey keyOnPad1 : movementVariation) {
-                numberOfMovements += getMinNumberOfMovementsOnPad2(currentPad1, keyOnPad1);
+                numberOfMovements += getMinNumberOfMovements(currentPad1, keyOnPad1, remainingRobotPads - 1, cache);
                 currentPad1 = keyOnPad1;
             }
             if (numberOfMovements < minNumberOfMovements) {
                 minNumberOfMovements = numberOfMovements;
             }
         }
-        return minNumberOfMovements;
-    }
-
-    private static int getMinNumberOfMovementsOnPad2(MovementKey current, MovementKey next) {
-        int minNumberOfMovements = Integer.MAX_VALUE;
-        List<MovementKey> movements = current.movementsToNextPress(next);
-        for (List<MovementKey> movementVariation : validPermutationsWithPress(current, movements)) {
-            int numberOfMovements = 0;
-            MovementKey currentPad2 = PRESS;
-            for (MovementKey keyOnPad2 : movementVariation) {
-                numberOfMovements += currentPad2.movementsToNextPress(keyOnPad2).size();
-                currentPad2 = keyOnPad2;
-            }
-            if (numberOfMovements < minNumberOfMovements) {
-                minNumberOfMovements = numberOfMovements;
-            }
-        }
+        cache.put(remainingRobotPads, current, next, minNumberOfMovements);
         return minNumberOfMovements;
     }
 
@@ -107,11 +103,6 @@ interface Day21 {
     static String toString(List<MovementKey> movements) {
         return movements.stream().map(MovementKey::toString).collect(Collectors.joining());
     }
-
-    static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
-    }
 }
 
 
@@ -131,6 +122,8 @@ record Code(List<NumericKey> keys) {
 }
 
 interface Key<SELF> {
+    int ordinal();
+
     int row();
 
     int column();
@@ -142,6 +135,19 @@ interface Key<SELF> {
         }
         return result;
     }
+
+    default List<MovementKey> movementsToNextPress(Key<SELF> target) {
+        List<MovementKey> movements = new ArrayList<>();
+        if (target != this) {
+            MovementKey vertical = target.row() < row() ? MovementKey.UP : MovementKey.DOWN;
+            MovementKey horizontal = target.column() < column() ? MovementKey.LEFT : MovementKey.RIGHT;
+            movements.addAll(repeat(vertical, Math.abs(target.row() - row())));
+            movements.addAll(repeat(horizontal, Math.abs(target.column() - column())));
+        }
+        movements.add(PRESS);
+        return movements;
+    }
+
 
     SELF move(MovementKey movement);
 }
@@ -180,23 +186,6 @@ enum NumericKey implements Key<NumericKey> {
                 .filter(target -> target.row() == row + movement.deltaRow() && target.column() == column + movement.deltaColumn())
                 .findFirst()
                 .orElse(null);
-    }
-
-    public List<MovementKey> movementsToNextPress(NumericKey target) {
-        List<MovementKey> movements = new ArrayList<>();
-        if (target != this) {
-            MovementKey vertical = target.row() < row() ? MovementKey.UP : MovementKey.DOWN;
-            MovementKey horizontal = target.column() < column() ? MovementKey.LEFT : MovementKey.RIGHT;
-            if (vertical == MovementKey.UP) {
-                movements.addAll(repeat(vertical, Math.abs(target.row() - row())));
-                movements.addAll(repeat(horizontal, Math.abs(target.column() - column())));
-            } else {
-                movements.addAll(repeat(horizontal, Math.abs(target.column() - column())));
-                movements.addAll(repeat(vertical, Math.abs(target.row() - row())));
-            }
-        }
-        movements.add(PRESS);
-        return movements;
     }
 
     public int numericValue() {
@@ -246,25 +235,37 @@ enum MovementKey implements Key<MovementKey> {
                 .orElse(null);
     }
 
-    public List<MovementKey> movementsToNextPress(MovementKey target) {
-        List<MovementKey> movements = new ArrayList<>();
-        if (target != this) {
-            MovementKey vertical = target.row() < row() ? UP : DOWN;
-            MovementKey horizontal = target.column() < column() ? LEFT : RIGHT;
-            if (vertical == DOWN) {
-                movements.addAll(repeat(vertical, Math.abs(target.row() - row())));
-                movements.addAll(repeat(horizontal, Math.abs(target.column() - column())));
-            } else {
-                movements.addAll(repeat(horizontal, Math.abs(target.column() - column())));
-                movements.addAll(repeat(vertical, Math.abs(target.row() - row())));
-            }
-        }
-        movements.add(PRESS);
-        return movements;
-    }
-
     @Override
     public String toString() {
         return String.valueOf(c);
+    }
+}
+
+class Cache {
+
+    private final long[][][] cache;
+
+    public Cache(int numberOfRobotPads) {
+        int maxKeyRange = Math.max(NumericKey.values().length, MovementKey.values().length);
+        cache = new long[numberOfRobotPads + 1][maxKeyRange][maxKeyRange];
+        for (int robot = 0; robot < numberOfRobotPads + 1; robot++) {
+            for (int i = 0; i < maxKeyRange; i++) {
+                for (int j = 0; j < maxKeyRange; j++) {
+                    cache[robot][i][j] = Long.MAX_VALUE;
+                }
+            }
+        }
+    }
+
+    public <T extends Key<T>> boolean contains(int robot, T current, T next) {
+        return cache[robot][current.ordinal()][next.ordinal()] < Long.MAX_VALUE;
+    }
+
+    public <T extends Key<T>> long get(int robot, T current, T next) {
+        return cache[robot][current.ordinal()][next.ordinal()];
+    }
+
+    public <T extends Key<T>> void put(int robot, T current, T next, long value) {
+        cache[robot][current.ordinal()][next.ordinal()] = value;
     }
 }

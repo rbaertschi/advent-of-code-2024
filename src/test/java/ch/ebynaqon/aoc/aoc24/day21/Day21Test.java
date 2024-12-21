@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day21;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -42,7 +41,7 @@ class Day21Test {
         */
         assertThat(SEVEN.movementsToNextPress(NINE)).containsExactly(RIGHT, RIGHT, PRESS);
         assertThat(NINE.movementsToNextPress(SEVEN)).containsExactly(LEFT, LEFT, PRESS);
-        assertThat(ONE.movementsToNextPress(ENTER)).containsExactly(RIGHT, RIGHT, DOWN, PRESS);
+        assertThat(ONE.movementsToNextPress(ENTER)).containsExactly(DOWN, RIGHT, RIGHT, PRESS);
         assertThat(ENTER.movementsToNextPress(ONE)).containsExactly(UP, LEFT, LEFT, PRESS);
     }
 
@@ -57,7 +56,7 @@ class Day21Test {
         */
         assertThat(PRESS.movementsToNextPress(UP)).containsExactly(LEFT, PRESS);
         assertThat(UP.movementsToNextPress(PRESS)).containsExactly(RIGHT, PRESS);
-        assertThat(LEFT.movementsToNextPress(UP)).containsExactly(RIGHT, UP, PRESS);
+        assertThat(LEFT.movementsToNextPress(UP)).containsExactly(UP, RIGHT, PRESS);
         assertThat(UP.movementsToNextPress(LEFT)).containsExactly(DOWN, LEFT, PRESS);
     }
 
@@ -116,22 +115,6 @@ class Day21Test {
     }
 
     @Test
-    @Disabled
-    void solvePart2UsingExample() {
-        // given
-        RawProblemInput input = new RawProblemInput("""
-                42
-                """);
-
-        // when
-        var result = Day21.solvePart2(input);
-
-        // then
-        assertThat(result).isEqualTo(42);
-    }
-
-    @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day21.txt");
@@ -140,7 +123,7 @@ class Day21Test {
         var result = Day21.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(218309335714068L);
     }
 
 }
