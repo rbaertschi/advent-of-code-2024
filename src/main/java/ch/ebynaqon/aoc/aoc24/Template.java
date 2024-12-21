@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 class Template {
     public static void main(String[] args) throws IOException {
-        int day = 21;
+        int day = 22;
         String dayWithLeadingZero = String.format("%02d", day);
         Path javaSourcePackage = Path.of("src/main/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
         Path javaTestPackage = Path.of("src/test/java/ch/ebynaqon/aoc/aoc24/day" + dayWithLeadingZero);
@@ -137,20 +137,10 @@ class Template {
                         return problem.samples().stream().mapToLong(ProblemSample::value).max().orElseThrow();
                     }
                 }
-                
-                """.replaceAll("\\{dayWithLeadingZero}", dayWithLeadingZero));
-        Files.writeString(javaSourcePackage.resolve("ProblemInput.java"), """
-                package ch.ebynaqon.aoc.aoc24.day{dayWithLeadingZero};
-                
-                import java.util.List;
-                
+
                 record ProblemInput(List<ProblemSample> samples) {
                 }
-                
-                """.replaceAll("\\{dayWithLeadingZero}", dayWithLeadingZero));
-        Files.writeString(javaSourcePackage.resolve("ProblemSample.java"), """
-                package ch.ebynaqon.aoc.aoc24.day{dayWithLeadingZero};
-                
+
                 record ProblemSample(long value) {
                 }
                 
