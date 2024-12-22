@@ -2,9 +2,9 @@ package ch.ebynaqon.aoc.aoc24.day22;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 interface Day22 {
 
@@ -26,46 +26,32 @@ interface Day22 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        TradeTable tradeTable = new TradeTable();
+        TradesByPriceChange tradeTable = new TradesByPriceChange();
         for (SecretNumber trader : problem.traders()) {
-            Map<PriceChangeSequence, Integer> trades = getTrades(trader);
-            for (Map.Entry<PriceChangeSequence, Integer> trade : trades.entrySet()) {
-                tradeTable.add(trade.getKey(), trade.getValue());
-            }
+            updateTrades(trader, tradeTable);
         }
         return tradeTable.maxValue();
     }
 
-    static Map<PriceChangeSequence, Integer> getTrades(SecretNumber initialSecret) {
-        Map<PriceChangeSequence, Integer> trades = new HashMap<>();
+    static void updateTrades(SecretNumber initialSecret, TradesByPriceChange tradeTable) {
+        Set<PriceChangeSequence> seen = new HashSet<>();
         SecretNumber secret = initialSecret;
-        int bananas1 = -1;
-        int bananas2 = -1;
-        int bananas3 = -1;
-        int bananas4 = bananas(initialSecret);
+        PriceHistory priceHistory = new PriceHistory(-1, -1, -1, priceFromSecret(initialSecret));
         for (int i = 0; i < 2000; i++) {
             secret = secret.next();
-            int currentBananas = bananas(secret);
-            if (bananas1 > -1) {
-                PriceChangeSequence changeSequence = new PriceChangeSequence(
-                        bananas2 - bananas1,
-                        bananas3 - bananas2,
-                        bananas4 - bananas3,
-                        currentBananas - bananas4
-                );
-                if (!trades.containsKey(changeSequence)) {
-                    trades.put(changeSequence, currentBananas);
+            int currentPrice = priceFromSecret(secret);
+            if (priceHistory.isValid()) {
+                PriceChangeSequence priceChange = priceHistory.changes(currentPrice);
+                if (!seen.contains(priceChange)) {
+                    seen.add(priceChange);
+                    tradeTable.add(priceChange, currentPrice);
                 }
             }
-            bananas1 = bananas2;
-            bananas2 = bananas3;
-            bananas3 = bananas4;
-            bananas4 = currentBananas;
+            priceHistory = priceHistory.next(currentPrice);
         }
-        return trades;
     }
 
-    private static short bananas(SecretNumber secret) {
+    private static short priceFromSecret(SecretNumber secret) {
         return (short) (secret.value() % 10);
     }
 
@@ -120,18 +106,35 @@ record SecretNumber(long value) {
     }
 }
 
-record Trade(PriceChangeSequence changeSequence, int bananas) {
-}
-
 record PriceChangeSequence(int d1, int d2, int d3, int d4) {
 }
 
-class TradeTable {
+record PriceHistory(int p1, int p2, int p3, int p4) {
+
+    public PriceHistory next(int newPrice) {
+        return new PriceHistory(p2, p3, p4, newPrice);
+    }
+
+    public boolean isValid() {
+        return p1 > -1;
+    }
+
+    public PriceChangeSequence changes(int newPrice) {
+        return new PriceChangeSequence(
+                p2 - p1,
+                p3 - p2,
+                p4 - p3,
+                newPrice - p4
+        );
+    }
+}
+
+class TradesByPriceChange {
 
     private final int[][][][] table;
     private int max;
 
-    public TradeTable() {
+    public TradesByPriceChange() {
         table = new int[19][19][19][19];
         max = 0;
     }
@@ -165,3 +168,4 @@ class TradeTable {
     record Index(int i1, int i2, int i3, int i4) {
     }
 }
+
