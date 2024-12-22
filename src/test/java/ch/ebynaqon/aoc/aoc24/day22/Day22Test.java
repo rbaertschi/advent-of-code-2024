@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day22;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -67,7 +66,6 @@ class Day22Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
@@ -93,7 +91,7 @@ class Day22Test {
         var result = Day22.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(2423);
     }
 
     @ParameterizedTest

@@ -2,8 +2,9 @@ package ch.ebynaqon.aoc.aoc24.day22;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 interface Day22 {
 
@@ -25,37 +26,36 @@ interface Day22 {
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        List<List<Trade>> tradesByTrader = problem.traders().stream().map(Day22::getTrades).toList();
-        List<PriceChangeSequence> changes = tradesByTrader.stream().flatMap(t -> t.stream().map(Trade::changeSequence)).toList();
-        int maxBananas = 0;
-        for (PriceChangeSequence sequence : changes) {
-            int bananas = tradesByTrader.stream().mapToInt(trades ->
-                    trades.stream().filter(trade -> trade.changeSequence().equals(sequence))
-                            .mapToInt(Trade::bananas).max().orElse(0)).sum();
-            maxBananas = Math.max(maxBananas, bananas);
+        TradeTable tradeTable = new TradeTable();
+        for (SecretNumber trader : problem.traders()) {
+            Map<PriceChangeSequence, Integer> trades = getTrades(trader);
+            for (Map.Entry<PriceChangeSequence, Integer> trade : trades.entrySet()) {
+                tradeTable.add(trade.getKey(), trade.getValue());
+            }
         }
-
-        return maxBananas;
+        return tradeTable.maxValue();
     }
 
-    static List<Trade> getTrades(SecretNumber initialSecret) {
-        ArrayList<Trade> trades = new ArrayList<>();
+    static Map<PriceChangeSequence, Integer> getTrades(SecretNumber initialSecret) {
+        Map<PriceChangeSequence, Integer> trades = new HashMap<>();
         SecretNumber secret = initialSecret;
-        short bananas1 = -1;
-        short bananas2 = -1;
-        short bananas3 = -1;
-        short bananas4 = bananas(initialSecret);
+        int bananas1 = -1;
+        int bananas2 = -1;
+        int bananas3 = -1;
+        int bananas4 = bananas(initialSecret);
         for (int i = 0; i < 2000; i++) {
             secret = secret.next();
-            short currentBananas = bananas(secret);
+            int currentBananas = bananas(secret);
             if (bananas1 > -1) {
                 PriceChangeSequence changeSequence = new PriceChangeSequence(
-                        (short) (bananas2 - bananas1),
-                        (short) (bananas3 - bananas2),
-                        (short) (bananas4 - bananas3),
-                        (short) (currentBananas - bananas4)
+                        bananas2 - bananas1,
+                        bananas3 - bananas2,
+                        bananas4 - bananas3,
+                        currentBananas - bananas4
                 );
-                trades.add(new Trade(changeSequence, currentBananas));
+                if (!trades.containsKey(changeSequence)) {
+                    trades.put(changeSequence, currentBananas);
+                }
             }
             bananas1 = bananas2;
             bananas2 = bananas3;
@@ -120,6 +120,48 @@ record SecretNumber(long value) {
     }
 }
 
-record Trade(PriceChangeSequence changeSequence, short bananas) {}
+record Trade(PriceChangeSequence changeSequence, int bananas) {
+}
 
-record PriceChangeSequence(short d1, short d2, short d3, short d4) {}
+record PriceChangeSequence(int d1, int d2, int d3, int d4) {
+}
+
+class TradeTable {
+
+    private final int[][][][] table;
+    private int max;
+
+    public TradeTable() {
+        table = new int[19][19][19][19];
+        max = 0;
+    }
+
+    public void add(PriceChangeSequence priceChanges, Integer bananas) {
+        Index index = index(priceChanges);
+        int current = table[index.i1()][index.i2()][index.i3()][index.i4()];
+        int next = current + bananas;
+        table[index.i1()][index.i2()][index.i3()][index.i4()] = next;
+        if (next > max) {
+            max = next;
+        }
+    }
+
+    private static Index index(PriceChangeSequence priceChanges) {
+        return new Index(idx(priceChanges.d1()), idx(priceChanges.d2()), idx(priceChanges.d3()), idx(priceChanges.d4()));
+    }
+
+    private static int idx(int i) {
+        int idx = i + 9;
+        if (idx < 0 || idx > 18) {
+            throw new IndexOutOfBoundsException(idx);
+        }
+        return idx;
+    }
+
+    public int maxValue() {
+        return max;
+    }
+
+    record Index(int i1, int i2, int i3, int i4) {
+    }
+}
