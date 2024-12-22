@@ -2,6 +2,7 @@ package ch.ebynaqon.aoc.aoc24.day22;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
 
+import java.util.ArrayList;
 import java.util.List;
 
 interface Day22 {
@@ -17,14 +18,55 @@ interface Day22 {
 
     static long solvePart1(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.samples().stream()
+        return problem.traders().stream()
                 .map(Day22::get2000th)
                 .mapToLong(SecretNumber::value).sum();
     }
 
     static long solvePart2(RawProblemInput input) {
         ProblemInput problem = parseProblem(input);
-        return problem.samples().stream().mapToLong(SecretNumber::value).max().orElseThrow();
+        List<List<Trade>> tradesByTrader = problem.traders().stream().map(Day22::getTrades).toList();
+        List<PriceChangeSequence> changes = tradesByTrader.stream().flatMap(t -> t.stream().map(Trade::changeSequence)).toList();
+        int maxBananas = 0;
+        for (PriceChangeSequence sequence : changes) {
+            int bananas = tradesByTrader.stream().mapToInt(trades ->
+                    trades.stream().filter(trade -> trade.changeSequence().equals(sequence))
+                            .mapToInt(Trade::bananas).max().orElse(0)).sum();
+            maxBananas = Math.max(maxBananas, bananas);
+        }
+
+        return maxBananas;
+    }
+
+    static List<Trade> getTrades(SecretNumber initialSecret) {
+        ArrayList<Trade> trades = new ArrayList<>();
+        SecretNumber secret = initialSecret;
+        short bananas1 = -1;
+        short bananas2 = -1;
+        short bananas3 = -1;
+        short bananas4 = bananas(initialSecret);
+        for (int i = 0; i < 2000; i++) {
+            secret = secret.next();
+            short currentBananas = bananas(secret);
+            if (bananas1 > -1) {
+                PriceChangeSequence changeSequence = new PriceChangeSequence(
+                        (short) (bananas2 - bananas1),
+                        (short) (bananas3 - bananas2),
+                        (short) (bananas4 - bananas3),
+                        (short) (currentBananas - bananas4)
+                );
+                trades.add(new Trade(changeSequence, currentBananas));
+            }
+            bananas1 = bananas2;
+            bananas2 = bananas3;
+            bananas3 = bananas4;
+            bananas4 = currentBananas;
+        }
+        return trades;
+    }
+
+    private static short bananas(SecretNumber secret) {
+        return (short) (secret.value() % 10);
     }
 
     private static SecretNumber get2000th(SecretNumber secret) {
@@ -37,7 +79,7 @@ interface Day22 {
 
 }
 
-record ProblemInput(List<SecretNumber> samples) {
+record ProblemInput(List<SecretNumber> traders) {
 }
 
 record SecretNumber(long value) {
@@ -78,3 +120,6 @@ record SecretNumber(long value) {
     }
 }
 
+record Trade(PriceChangeSequence changeSequence, short bananas) {}
+
+record PriceChangeSequence(short d1, short d2, short d3, short d4) {}

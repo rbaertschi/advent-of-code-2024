@@ -71,18 +71,20 @@ class Day22Test {
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                1
+                2
+                3
+                2024
                 """);
 
         // when
         var result = Day22.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(23);
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day22.txt");
