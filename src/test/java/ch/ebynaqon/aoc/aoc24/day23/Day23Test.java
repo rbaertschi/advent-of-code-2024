@@ -91,22 +91,51 @@ class Day23Test {
     }
 
     @Test
-    @Disabled
     void solvePart2UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                kh-tc
+                qp-kh
+                de-cg
+                ka-co
+                yn-aq
+                qp-ub
+                cg-tb
+                vc-aq
+                tb-ka
+                wh-tc
+                yn-cg
+                kh-ub
+                ta-co
+                de-co
+                tc-td
+                tb-wq
+                wh-td
+                ta-ka
+                td-qp
+                aq-cg
+                wq-ub
+                ub-vc
+                de-ta
+                wq-aq
+                wq-vc
+                wh-yn
+                ka-de
+                kh-ta
+                co-tc
+                wh-qp
+                tb-vc
+                td-yn
                 """);
 
         // when
         var result = Day23.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo("co,de,ka,ta");
     }
 
     @Test
-    @Disabled
     void solvePart2() {
         // given
         RawProblemInput input = RawProblemInput.fromResource("/day23.txt");
@@ -115,7 +144,7 @@ class Day23Test {
         var result = Day23.solvePart2(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo("ar,ep,ih,ju,jx,le,ol,pk,pm,pp,xf,yu,zg");
     }
 
 }
