@@ -1,7 +1,6 @@
 package ch.ebynaqon.aoc.aoc24.day25;
 
 import ch.ebynaqon.aoc.helper.RawProblemInput;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -61,12 +60,12 @@ class Day25Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new Lock(List.of(0,5,3,4,3)),
-                new Lock(List.of(1,2,0,5,3))
+                new Lock(List.of(0, 5, 3, 4, 3)),
+                new Lock(List.of(1, 2, 0, 5, 3))
         ), List.of(
-                new Key(List.of(0,5,3,4,2)),
-                new Key(List.of(1,2,1,5,3)),
-                new Key(List.of(2,5,3,5,4))
+                new Key(List.of(0, 5, 3, 4, 2)),
+                new Key(List.of(1, 2, 1, 5, 3)),
+                new Key(List.of(2, 5, 3, 5, 4))
         ), 5));
     }
 
@@ -132,34 +131,6 @@ class Day25Test {
 
         // then
         assertThat(result).isEqualTo(3021);
-    }
-
-    @Test
-    @Disabled
-    void solvePart2UsingExample() {
-        // given
-        RawProblemInput input = new RawProblemInput("""
-                42
-                """);
-
-        // when
-        var result = Day25.solvePart2(input);
-
-        // then
-        assertThat(result).isEqualTo(42);
-    }
-
-    @Test
-    @Disabled
-    void solvePart2() {
-        // given
-        RawProblemInput input = RawProblemInput.fromResource("/day25.txt");
-
-        // when
-        var result = Day25.solvePart2(input);
-
-        // then
-        assertThat(result).isEqualTo(42);
     }
 
 }

@@ -59,11 +59,6 @@ interface Day25 {
         }
         return false;
     }
-
-    static long solvePart2(RawProblemInput input) {
-        ProblemInput problem = parseProblem(input);
-        return 0;
-    }
 }
 
 record ProblemInput(List<Lock> locks, List<Key> keys, int height) {
