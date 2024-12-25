@@ -15,7 +15,45 @@ class Day25Test {
     void parseProblemInput() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                #####
+                .####
+                .####
+                .####
+                .#.#.
+                .#...
+                .....
+                
+                #####
+                ##.##
+                .#.##
+                ...##
+                ...#.
+                ...#.
+                .....
+                
+                .....
+                #....
+                #....
+                #...#
+                #.#.#
+                #.###
+                #####
+                
+                .....
+                .....
+                #.#..
+                ###..
+                ###.#
+                ###.#
+                #####
+                
+                .....
+                .....
+                .....
+                #....
+                #.#..
+                #.#.#
+                #####
                 """);
 
         // when
@@ -23,27 +61,68 @@ class Day25Test {
 
         // then
         assertThat(actual).isEqualTo(new ProblemInput(List.of(
-                new ProblemSample(42L)
-        )));
+                new Lock(List.of(0,5,3,4,3)),
+                new Lock(List.of(1,2,0,5,3))
+        ), List.of(
+                new Key(List.of(0,5,3,4,2)),
+                new Key(List.of(1,2,1,5,3)),
+                new Key(List.of(2,5,3,5,4))
+        ), 5));
     }
 
     @Test
-    @Disabled
     void solvePart1UsingExample() {
         // given
         RawProblemInput input = new RawProblemInput("""
-                42
+                #####
+                .####
+                .####
+                .####
+                .#.#.
+                .#...
+                .....
+                
+                #####
+                ##.##
+                .#.##
+                ...##
+                ...#.
+                ...#.
+                .....
+                
+                .....
+                #....
+                #....
+                #...#
+                #.#.#
+                #.###
+                #####
+                
+                .....
+                .....
+                #.#..
+                ###..
+                ###.#
+                ###.#
+                #####
+                
+                .....
+                .....
+                .....
+                #....
+                #.#..
+                #.#.#
+                #####
                 """);
 
         // when
         var result = Day25.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(3);
     }
 
     @Test
-    @Disabled
     void solvePart1() {
         // given input from https://adventofcode.com/2024/day/25/input
         RawProblemInput input = RawProblemInput.fromResource("/day25.txt");
@@ -52,7 +131,7 @@ class Day25Test {
         var result = Day25.solvePart1(input);
 
         // then
-        assertThat(result).isEqualTo(42);
+        assertThat(result).isEqualTo(3021);
     }
 
     @Test
